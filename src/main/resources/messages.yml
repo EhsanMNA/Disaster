@@ -1,0 +1,42 @@
+prefix: "<gradient:#0f7d46:#10b361><bold>DISASTERS <white>|<reset> "
+
+# console messages
+console-access: "<red>Only players can use this command!"
+
+# player messages
+player-permission: "{prefix}<red>You don't have permission to use this command!"
+player-no-arena: "{prefix}<red>You are not in any arena!"
+player-in-arena: "{prefix}<red>You are already in arena!"
+
+# command
+command-arg: "{prefix}<yellow>Use /disaster help to get help"
+command-help: "{prefix}<yellow>/disaster <white><help|join|autoJoin|>"
+command-join-help: "{prefix}<yellow>/disaster join <white><arena name>"
+command-spectate-help: "{prefix}<yellow>/disaster spectate <white><arena name>"
+
+# arena
+arena-exist: "{prefix}<red>This arena does not exist!"
+arena-empty: "{prefix}<red>This arena is empty!"
+arena-disable: "{prefix}<red>This arena is not available to join!"
+arena-full: "{prefix}<red>This arena is full!"
+arena-active: "{prefix}<red>This arena is active!"
+arena-join: "{prefix}<green>You have been joined to the {0}!"
+arena-leave: "{prefix}<yellow>You left the arena!"
+arena-spectate: "{prefix}<green>You are spectating the {0} arena!"
+arena-fill: "{prefix}<red>There is not enough players to start the arena!"
+arena-countdown: "{prefix}<yellow>{0}s..."
+arena-start: "{prefix}<green>Game has been started!"
+
+# game
+game-disaster-header: "<green><bold>−−−−−− ◈<white> Disasters <green><bold>◈ −−−−−−"
+game-disaster-title: "<yellow><bold> → Disasters: "
+game-disaster-description: "<yellow><bold> - → {0} {1}"
+game-disaster-footer: "<green><bold>−−−−−− ◈ −−−−−−−−−−−− ◈ −−−−−−"
+
+game-finish-header: "<green><bold>−−−−−− ◈<white> Game Finished <green><bold>◈ −−−−−−"
+game-finish-title: "<white>              <yellow>Winners: <white> {0}"
+game-finish-footer: "<green><bold>−−−−−− ◈ −−−−−−−−−−−− ◈ −−−−−−"
+
+  # action bars
+game-actionbar-timer: "<green>Time remaining:<white> {0}"
+game-actionbar-spectator: "<yellow><bold>Spectating!<reset> <green>Time remaining:<white> {0}"
