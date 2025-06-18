@@ -1,7 +1,10 @@
 package me.ehsanmna.disaster.manager;
 
+import me.ehsanmna.disaster.events.ArenaPlayerDeathEvent;
+import me.ehsanmna.disaster.events.PlayerJoinArenaEvent;
 import me.ehsanmna.disaster.model.arena.Arena;
 import me.ehsanmna.disaster.model.arena.ArenaPlayer;
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
@@ -22,14 +25,31 @@ public class PlayerManager {
     }
 
     public void killPlayer(ArenaPlayer arenaPlayer){
+        ArenaPlayerDeathEvent event = new ArenaPlayerDeathEvent(arenaPlayer);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled()) return;
+
+        Player player = arenaPlayer.getPlayer();
         arenaPlayer.setAlive(false);
-        arenaPlayer.getPlayer().setGameMode(GameMode.ADVENTURE);
-        arenaPlayer.getPlayer().getInventory().clear();
-        arenaPlayer.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY,Integer.MAX_VALUE, 0, false,false));
+        player.setHealth(player.getMaxHealth());
+        player.setGameMode(GameMode.ADVENTURE);
+        player.getInventory().clear();
+        player.setAllowFlight(true);
+        player.setFlying(true);
+        player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY,Integer.MAX_VALUE, 0, false,false));
     }
 
     public ArenaPlayer joinPlayer(Player player, Arena arena){
         ArenaPlayer arenaPlayer = arena.getArenaHandler().addPlayer(player);
+        if (arenaPlayer == null) return null;
+
+        PlayerJoinArenaEvent event = new PlayerJoinArenaEvent(player, arena);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled()) return null;
+
+        if (arena.getArenaHandler() == null) arena.enable();
+        if (arena.getArenaHandler().getSlimeWorld() == null) arena.getArenaHandler().getArenaWorldHandler().checkWorld();
+
         addPlayerToArena(arenaPlayer);
         player.teleport(arena.getSpawn());
         return arenaPlayer;
@@ -67,6 +87,8 @@ public class PlayerManager {
         removePlayerFromArena(player.getUniqueId());
         player.teleport(lobbyManager.getLobbySpawn());
         player.getInventory().clear();
+        player.setAllowFlight(false);
+        player.setFlying(false);
         player.clearActivePotionEffects();
         player.setGameMode(GameMode.SURVIVAL);
     }

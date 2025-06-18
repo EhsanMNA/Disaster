@@ -3,7 +3,9 @@ package me.ehsanmna.disaster;
 import me.ehsanmna.disaster.command.DisasterAdminCommand;
 import me.ehsanmna.disaster.command.DisasterDeveloperCommand;
 import me.ehsanmna.disaster.command.DisasterMainCommand;
+import me.ehsanmna.disaster.listener.DisasterEventsListener;
 import me.ehsanmna.disaster.listener.DisasterGameListener;
+import me.ehsanmna.disaster.listener.DisasterRulesListener;
 import me.ehsanmna.disaster.manager.*;
 import me.ehsanmna.disaster.model.arena.Arena;
 import me.ehsanmna.disaster.util.TextUtils;
@@ -46,6 +48,8 @@ public final class DisasterPlugin extends JavaPlugin {
         getCommand("disaster").setTabCompleter(mainCommand);
 
         getServer().getPluginManager().registerEvents(new DisasterGameListener(playerManager,arenaManager), this);
+        getServer().getPluginManager().registerEvents(new DisasterRulesListener(playerManager,arenaManager), this);
+        getServer().getPluginManager().registerEvents(new DisasterEventsListener(playerManager,arenaManager), this);
 
         getLogger().info("Disaster has been loaded!");
     }
@@ -55,7 +59,8 @@ public final class DisasterPlugin extends JavaPlugin {
         configManager.saveArenas();
         dataManager.save();
         for (Arena arena : arenaManager.getArenas())
-            if (arena.isEnable() && arena.getArenaHandler().isRunning()) arena.getArenaHandler().getArenaService().finishGame();
+            if (arena.isEnable() && arena.getArenaHandler().isRunning()) arena.getArenaHandler().getArenaService().finishGame(false);
+            else arena.disable();
     }
 
     public static DisasterPlugin getInstance(){

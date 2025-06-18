@@ -19,7 +19,7 @@ import java.util.List;
 public class DisasterDeveloperCommand implements CommandExecutor, TabCompleter {
 
     private final DisasterPlugin plugin;
-    private final String prefix = "<gradient:#0f7d46:#10b361><bold>DISASTERS <white>|<reset>";
+    public final static String prefix = "<gradient:#0f7d46:#10b361><bold>DISASTERS <white>|<reset>";
 
     public DisasterDeveloperCommand(DisasterPlugin plugin) {
         this.plugin = plugin;

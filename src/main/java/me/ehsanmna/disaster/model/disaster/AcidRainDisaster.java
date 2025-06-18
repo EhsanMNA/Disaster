@@ -25,7 +25,6 @@ public class AcidRainDisaster extends BaseDisaster{
         damageTask = new BukkitRunnable() {
             @Override
             public void run() {
-                System.out.println("Acid");
                 if (!isActive()) {
                     cancel();
                     return;
@@ -34,7 +33,8 @@ public class AcidRainDisaster extends BaseDisaster{
             }
         };
         damageTask.runTaskTimer(getPlugin(), 0L, 20L);
-        Bukkit.getLogger().info("Acid Rain Disaster activated for arena: " + getArena().getName());
+        if (getArena().getArenaHandler().getArenaService().isDebug())
+            getPlugin().getLogger().info("Acid Rain Disaster activated for arena: " + getArena().getName());
     }
 
     private void damageExposedPlayers() {
@@ -54,9 +54,9 @@ public class AcidRainDisaster extends BaseDisaster{
         int x = location.getBlockX();
         int z = location.getBlockZ();
         for (int y = location.getBlockY() + 1; y <= world.getMaxHeight(); y++) {
-            if (world.getBlockAt(x, y, z).getType() != Material.AIR) {
+            if (world.getBlockAt(x, y, z).getType() != Material.AIR &&
+                    world.getBlockAt(x, y, z).getType() != Material.VOID_AIR)
                 return false;
-            }
         }
         return true;
     }
@@ -70,7 +70,8 @@ public class AcidRainDisaster extends BaseDisaster{
         }
         World world = getArena().getArenaRegion().getPos1().getWorld();
         world.setWeatherDuration(0);
-        Bukkit.getLogger().info("Acid Rain Disaster deactivated for arena: " + getArena().getName());
+        if (getArena().getArenaHandler().getArenaService().isDebug())
+            getPlugin().getLogger().info("Acid Rain Disaster deactivated for arena: " + getArena().getName());
     }
 
     @Override

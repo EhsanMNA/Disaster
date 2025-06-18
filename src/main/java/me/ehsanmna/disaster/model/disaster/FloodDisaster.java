@@ -33,10 +33,10 @@ public class FloodDisaster extends BaseDisaster {
                     cancel();
                     return;
                 }
-                raiseWaterAroundPlayers();
+                raiseWater();
             }
         };
-        floodTask.runTaskTimer(getPlugin(), 0L, 200L);
+        floodTask.runTaskTimer(getPlugin(), 0L, 120L);
 
         damageTask = new BukkitRunnable() {
             @Override
@@ -49,7 +49,27 @@ public class FloodDisaster extends BaseDisaster {
             }
         };
         damageTask.runTaskTimer(getPlugin(), 0L, 20L);
-        Bukkit.getLogger().info("Flood Disaster activated for arena: " + getArena().getName());
+
+        this.currentWaterLevel = Math.min(getArena().getArenaRegion().getPos1().getBlockY(),
+                getArena().getArenaRegion().getPos2().getBlockY());
+        if (getArena().getArenaHandler().getArenaService().isDebug())
+            getPlugin().getLogger().info("Flood Disaster activated for arena: " + getArena().getName());
+    }
+
+    private void raiseWater() {
+        Location pos1 = getArena().getArenaRegion().getPos1();
+        Location pos2 = getArena().getArenaRegion().getPos2();
+
+        pos1.setWorld(Bukkit.getWorld(getArena().getWorldName()+"-backup"));
+        pos2.setWorld(Bukkit.getWorld(getArena().getWorldName()+"-backup"));
+
+        for (int x = Math.min(pos1.getBlockX(), pos2.getBlockX()); x<Math.max(pos1.getBlockX(), pos2.getBlockX()); x++){
+            for (int z = Math.min(pos1.getBlockZ(), pos2.getBlockZ()); z<Math.max(pos1.getBlockZ(), pos2.getBlockZ()); z++){
+                Location loc = new Location(pos1.getWorld(), x,currentWaterLevel,z);
+                if (loc.getBlock().getType() == Material.AIR || loc.getBlock().getType() == Material.VOID_AIR) loc.getBlock().setType(Material.WATER);
+            }
+        }
+        currentWaterLevel++;
     }
 
     private void raiseWaterAroundPlayers() {
@@ -64,7 +84,7 @@ public class FloodDisaster extends BaseDisaster {
                     Location loc = center.clone().add(x, 0, z);
                     loc.setY(world.getHighestBlockYAt(loc.getBlockX(), loc.getBlockZ()));
                     if (getArena().getArenaRegion().isInRegion(loc) &&
-                            loc.getBlock().getType() == Material.AIR) {
+                            (loc.getBlock().getType() == Material.AIR || loc.getBlock().getType() == Material.VOID_AIR)) {
                         loc.getBlock().setType(Material.WATER);
                         world.spawnParticle(Particle.WATER_BUBBLE, loc.clone().add(0.5, 0.5, 0.5),
                                 5, 0.2, 0.2, 0.2, 0);
@@ -98,8 +118,9 @@ public class FloodDisaster extends BaseDisaster {
             damageTask.cancel();
             damageTask = null;
         }
-        cleanupWater();
-        Bukkit.getLogger().info("Flood Disaster deactivated for arena: " + getArena().getName());
+        // cleanupWater();
+        if (getArena().getArenaHandler().getArenaService().isDebug())
+            getPlugin().getLogger().info("Flood Disaster deactivated for arena: " + getArena().getName());
     }
 
     private void cleanupWater() {

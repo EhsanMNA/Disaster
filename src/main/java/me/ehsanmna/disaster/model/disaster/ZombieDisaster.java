@@ -4,9 +4,11 @@ import me.ehsanmna.disaster.DisasterPlugin;
 import me.ehsanmna.disaster.model.arena.Arena;
 import me.ehsanmna.disaster.model.arena.ArenaPlayer;
 import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Zombie;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
@@ -31,7 +33,8 @@ public class ZombieDisaster extends BaseDisaster {
         super.setup();
         spawnZombies();
         hasSpawned = true;
-        Bukkit.getLogger().info("Zombie Disaster activated for arena: " + getArena().getName());
+        if (getArena().getArenaHandler().getArenaService().isDebug())
+            getPlugin().getLogger().info("Zombie Disaster activated for arena: " + getArena().getName());
 
         new BukkitRunnable() {
             @Override
@@ -56,9 +59,9 @@ public class ZombieDisaster extends BaseDisaster {
                 Location spawnLoc = getRandomLocationAroundPlayer(player);
                 if (spawnLoc != null) {
                     Zombie zombie = (Zombie) spawnLoc.getWorld().spawnEntity(spawnLoc, EntityType.ZOMBIE);
-                    if (random.nextDouble() < 0.3) {
-                        zombie.setBaby(true);
-                    }
+                    if (random.nextDouble() < 0.3) zombie.setBaby(true);
+                    zombie.getEquipment().setHelmet(new ItemStack(Material.GOLDEN_HELMET));
+
                     spawnedZombies.add(zombie);
                     totalZombies++;
                     zombie.getWorld().spawnParticle(Particle.SMOKE_LARGE, spawnLoc,
@@ -66,7 +69,8 @@ public class ZombieDisaster extends BaseDisaster {
                 }
             }
         }
-        Bukkit.getLogger().info("Spawned " + totalZombies + " zombies in arena: " + getArena().getName());
+        if (getArena().getArenaHandler().getArenaService().isDebug())
+            getPlugin().getLogger().info("Spawned " + totalZombies + " zombies in arena: " + getArena().getName());
     }
 
     private Location getRandomLocationAroundPlayer(Player player) {
@@ -79,11 +83,12 @@ public class ZombieDisaster extends BaseDisaster {
         int z = (int) (playerLoc.getZ() + Math.sin(angle) * distance);
         int y = world.getHighestBlockYAt(x, z) + 1;
 
-        Location loc = new Location(world, x, y, z);
+        Block loc = new Location(world, x, y, z).getBlock();
+        Block top = world.getBlockAt(loc.getLocation().clone().add(0, 1, 0));
         if (getArena().getArenaRegion().isInRegion(loc) &&
-                world.getBlockAt(loc).getType() == Material.AIR &&
-                world.getBlockAt(loc.clone().add(0, 1, 0)).getType() == Material.AIR) {
-            return loc;
+                (loc.getType() == Material.AIR || loc.getType() == Material.VOID_AIR) &&
+                (top.getType() == Material.AIR || top.getType() == Material.VOID_AIR)) {
+            return loc.getLocation();
         }
         return null;
     }
@@ -103,7 +108,8 @@ public class ZombieDisaster extends BaseDisaster {
     public void deActive() {
         super.deActive();
         cleanupZombies();
-        Bukkit.getLogger().info("Zombie Disaster deactivated for arena: " + getArena().getName());
+        if (getArena().getArenaHandler().getArenaService().isDebug())
+            getPlugin().getLogger().info("Zombie Disaster deactivated for arena: " + getArena().getName());
     }
 
     @Override

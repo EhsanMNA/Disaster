@@ -18,7 +18,7 @@ public class Region {
 
     public Region(Location pos1, Location pos2) {
         if (pos1 == null || pos2 == null){
-            Bukkit.getLogger().warning("Could nto create Door region!");
+            Bukkit.getLogger().warning("Could nto create region!");
             return;
         }
         if (pos1.getWorld() != pos2.getWorld())
@@ -50,8 +50,6 @@ public class Region {
 
     // Check if a location is within the region
     public boolean isInRegion(Location location) {
-        if (!location.getWorld().equals(pos1.getWorld())) return false;
-
         int x = location.getBlockX();
         int y = location.getBlockY();
         int z = location.getBlockZ();

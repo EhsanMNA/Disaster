@@ -84,7 +84,8 @@ public class DisasterMainCommand implements CommandExecutor, TabCompleter {
                 }
 
                 ArenaPlayer arenaPlayer = playerManager.joinPlayer(player,arena);
-                TextUtils.sendMessage(player, "arena-join", arenaName);
+                if (arenaPlayer == null) TextUtils.sendMessage(player, "arena-join-fail", arenaName);
+                else TextUtils.sendMessage(player, "arena-join", arenaName);
 
                 break;
 
@@ -106,6 +107,10 @@ public class DisasterMainCommand implements CommandExecutor, TabCompleter {
                 }
                 if (!arena.getArenaHandler().isRunning()){
                     TextUtils.sendMessage(player, "arena-empty");
+                    return true;
+                }
+                if (playerManager.isPlayerInArena(player)){
+                    TextUtils.sendMessage(player, "player-in-arena");
                     return true;
                 }
 

@@ -65,7 +65,7 @@ public class ArenaWaitingService {
                     return;
                 }
 
-                if (timer > 5 && isWaitingFull()) timer = 5;
+                if ((timer > 5 && isWaitingFull()) || (arenaService.isDebug() && timer > 5)) timer = 5;
                 else if (timer > arena.getArenaConfig().waitingTime() / 2 && arena.getArenaHandler().getPlayers().size() >= arena.getMaxPlayers() / 1.5) timer = 30;
 
                 if (timer % 10 == 0 || timer <= 5){

@@ -2,6 +2,7 @@ package me.ehsanmna.disaster.model.arena;
 
 import me.ehsanmna.disaster.DisasterPlugin;
 import me.ehsanmna.disaster.model.region.Region;
+import me.ehsanmna.disaster.util.SlimeWorldUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
@@ -98,10 +99,8 @@ public class Arena {
     public void enable(){
         enable = true;
         arenaHandler = new ArenaHandler(plugin, this);
+        arenaHandler.getArenaWorldHandler().checkWorld();
     }
-
-
-
 
     @Override
     public boolean equals(Object o) {
@@ -118,6 +117,7 @@ public class Arena {
 
     public void disable() {
         enable = false;
+        SlimeWorldUtils.deleteWorld(worldName);
         arenaHandler = null;
     }
 }

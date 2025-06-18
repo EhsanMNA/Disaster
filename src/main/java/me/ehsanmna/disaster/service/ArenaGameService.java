@@ -72,15 +72,40 @@ public class ArenaGameService {
         arena.getArenaHandler().announce("game-finish-footer");
 
         arena.getArenaHandler().setGameTime(arena.getArenaConfig().time());
+        arena.getArenaHandler().getDisasters().forEach(Disaster::deActive);
         arena.getArenaHandler().getDisasters().clear();
 
         new BukkitRunnable() {
             @Override
-            public void run() {arenaService.finishGame();}
+            public void run() {arenaService.finishGame(true);}
         }.runTaskLater(plugin, 100);
     }
 
-    private void addRandomDisasters(boolean sendMessage){
+    public boolean addDisaster(String disasterName){
+        return addDisaster(disasterName, false);
+    }
+
+    public boolean addDisaster(String disasterName, boolean sendMessage){
+        try {
+            DisasterType disasterType = DisasterType.valueOf(disasterName.toUpperCase());
+            addDisaster(disasterType, sendMessage);
+            return true;
+        }catch (Exception ignored){}
+        return false;
+    }
+
+    private void addDisaster(DisasterType disasterType, boolean sendMessage){
+        Disaster disaster = getDisaster(disasterType);
+        arena.getArenaHandler().addDisaster(disaster);
+        if (sendMessage){
+            arena.getArenaHandler().announce("game-disaster-header");
+            arena.getArenaHandler().announce("game-disaster-title");
+            arena.getArenaHandler().announce("game-disaster-description", disaster.getName(), disaster.getDescription());
+            arena.getArenaHandler().announce("game-disaster-footer");
+        }
+    }
+
+    public void addRandomDisasters(boolean sendMessage){
         Random random = new Random();
         int n = random.nextInt(2)+1;
         List<Disaster> disasters = new ArrayList<>();
@@ -89,7 +114,7 @@ public class ArenaGameService {
             disaster = submitDisaster(disaster);
             if(disaster!= null) disasters.add(disaster);
         }
-        if(disasters.isEmpty()) arena.getArenaHandler().announce("No disaster found ... report admin!");
+        if(disasters.isEmpty()) arena.getArenaHandler().announce("No disaster found ... (report admin! "+n+")");
         if (sendMessage){
             arena.getArenaHandler().announce("game-disaster-header");
             arena.getArenaHandler().announce("game-disaster-title");
@@ -123,6 +148,20 @@ public class ArenaGameService {
             case 4 -> disaster = new MeteorShowerDisaster(plugin,arena);
             case 5 -> disaster = new ZombieDisaster(plugin,arena);
             default -> disaster = new AcidRainDisaster(plugin,arena);
+        }
+        return disaster;
+    }
+
+    private Disaster getDisaster(DisasterType disasterType){
+        Disaster disaster;
+        switch (disasterType){
+            case ACID_RAIN -> disaster = new AcidRainDisaster(plugin,arena);
+            case DRAGON -> disaster = new DragonsDisaster(plugin,arena);
+            case FLOOD -> disaster = new FloodDisaster(plugin,arena);
+            case LIGHTING -> disaster = new LightingDisaster(plugin,arena);
+            case METEOR -> disaster = new MeteorShowerDisaster(plugin,arena);
+            case ZOMBIE -> disaster = new ZombieDisaster(plugin,arena);
+            default -> disaster = new HotPotatoDisaster(plugin,arena);
         }
         return disaster;
     }

@@ -38,7 +38,6 @@ public class DragonsDisaster extends BaseDisaster {
         dragonTask = new BukkitRunnable() {
             @Override
             public void run() {
-                System.out.println("Dragons!");
                 if (!isActive()) {
                     cleanupDragons();
                     cancel();
@@ -49,11 +48,12 @@ public class DragonsDisaster extends BaseDisaster {
             }
         };
         dragonTask.runTaskTimer(getPlugin(), 0L, 20L);
-        Bukkit.getLogger().info("Dragons Disaster activated for arena: " + getArena().getName());
+        if (getArena().getArenaHandler().getArenaService().isDebug())
+            getPlugin().getLogger().info("Dragons Disaster activated for arena: " + getArena().getName());
     }
 
     private void spawnDragons() {
-        World world = getArena().getArenaRegion().getPos1().getWorld();
+        World world = Bukkit.getWorld(getArena().getWorldName()+"-backup");
         int spawned = 0;
         for (ArenaPlayer arenaPlayer : getArena().getArenaHandler().getPlayersPlaying()) {
             if (spawned >= 2) break;
@@ -90,7 +90,7 @@ public class DragonsDisaster extends BaseDisaster {
     private Location getRandomLocationAroundPlayer(Player player) {
         Location playerLoc = player.getLocation();
         World world = playerLoc.getWorld();
-        int radius = 15;
+        int radius = 35;
         double angle = random.nextDouble() * 2 * Math.PI;
         double distance = random.nextDouble() * radius + 5;
         int x = (int) (playerLoc.getX() + Math.cos(angle) * distance);
@@ -156,7 +156,8 @@ public class DragonsDisaster extends BaseDisaster {
             dragonTask = null;
         }
         cleanupDragons();
-        Bukkit.getLogger().info("Dragons Disaster deactivated for arena: " + getArena().getName());
+        if (getArena().getArenaHandler().getArenaService().isDebug())
+            getPlugin().getLogger().info("Dragons Disaster deactivated for arena: " + getArena().getName());
     }
 
     @Override

@@ -5,6 +5,7 @@ import me.ehsanmna.disaster.model.arena.Arena;
 import me.ehsanmna.disaster.model.arena.ArenaPlayer;
 import me.ehsanmna.disaster.util.SlimeWorldUtils;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 
@@ -40,15 +41,21 @@ public class ArenaService {
         gameService.startGame();
     }
 
-    public void finishGame() {
+    public void finishGame(boolean restart) {
         for (ArenaPlayer arenaPlayer : new ArrayList<>(arena.getArenaHandler().getPlayers())){
             Player player = arenaPlayer.getPlayer();
             plugin.getPlayerManager().leavePlayer(player);
         }
-        SlimeWorldUtils.deleteWorld(arena.getWorldName());
         arena.disable();
-        arena.enable();
-        arena.getArenaHandler().setSlimeWorld(SlimeWorldUtils.createCloneWorld(arena.getWorldName()));
+        if (restart)
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    arena.enable();
+                    SlimeWorldUtils.createCloneWorld(arena.getWorldName());
+                    arena.getArenaHandler().setSlimeWorld(SlimeWorldUtils.getWorld(arena.getWorldName()));
+                }
+            }.runTaskLater(getPlugin(), 100);
     }
 
     public DisasterPlugin getPlugin() {

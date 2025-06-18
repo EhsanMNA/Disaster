@@ -7,7 +7,6 @@ import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.List;
 import java.util.Random;
 
 public class LightingDisaster extends BaseDisaster{
@@ -34,7 +33,8 @@ public class LightingDisaster extends BaseDisaster{
             }
         };
         task.runTaskTimer(getPlugin(), 0L, 100L); // Every 5 seconds
-        Bukkit.getLogger().info("Lightning Disaster activated for arena: " + getArena().getName());
+        if (getArena().getArenaHandler().getArenaService().isDebug())
+            getPlugin().getLogger().info("Lightning Disaster activated for arena: " + getArena().getName());
     }
 
     @Override
@@ -44,7 +44,8 @@ public class LightingDisaster extends BaseDisaster{
             task.cancel();
             task = null;
         }
-        Bukkit.getLogger().info("Lightning Disaster deactivated for arena: " + getArena().getName());
+        if (getArena().getArenaHandler().getArenaService().isDebug())
+            getPlugin().getLogger().info("Lightning Disaster deactivated for arena: " + getArena().getName());
     }
 
     @Override

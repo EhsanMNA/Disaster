@@ -40,7 +40,8 @@ public class MeteorShowerDisaster extends BaseDisaster {
             }
         };
         meteorTask.runTaskTimer(getPlugin(), 0L, 60L);
-        Bukkit.getLogger().info("Meteor Shower Disaster activated for arena: " + getArena().getName());
+        if (getArena().getArenaHandler().getArenaService().isDebug())
+            getPlugin().getLogger().info("Meteor Shower Disaster activated for arena: " + getArena().getName());
     }
 
     private void launchMeteors() {
@@ -48,8 +49,10 @@ public class MeteorShowerDisaster extends BaseDisaster {
         for (ArenaPlayer arenaPlayer : getArena().getArenaHandler().getPlayersPlaying()) {
             Player player = arenaPlayer.getPlayer();
             for (int i = 0; i < fireballCount; i++) {
-                Location spawnLoc = getRandomLocationAroundPlayer(player);
+                getPlugin().getLogger().info("Launching fireball with 13 khordad");
+                Location spawnLoc = getRandomLocationOfArena();
                 if (spawnLoc == null) continue;
+                getPlugin().getLogger().info("location of fireball is: "+spawnLoc.getBlockX()+", "+spawnLoc.getBlockY()+", "+spawnLoc.getBlockZ());
 
                 spawnLoc.setY(maxY + 20);
                 World world = spawnLoc.getWorld();
@@ -76,16 +79,16 @@ public class MeteorShowerDisaster extends BaseDisaster {
         }
     }
 
-    private Location getRandomLocationAroundPlayer(Player player) {
-        Location playerLoc = player.getLocation();
-        World world = playerLoc.getWorld();
-        int radius = 15;
-        double angle = random.nextDouble() * 2 * Math.PI;
-        double distance = random.nextDouble() * radius;
-        int x = (int) (playerLoc.getX() + Math.cos(angle) * distance);
-        int z = (int) (playerLoc.getZ() + Math.sin(angle) * distance);
+    private Location getRandomLocationOfArena() {
+        Location pos1 = getArena().getArenaRegion().getPos1();
+        Location pos2 = getArena().getArenaRegion().getPos2();
 
-        Location loc = new Location(world, x, 0, z);
+        int arz = Math.max(pos1.getBlockX(), pos2.getBlockX()) - Math.min(pos1.getBlockX(), pos2.getBlockX());
+        int tool = Math.max(pos1.getBlockZ(), pos2.getBlockZ()) - Math.min(pos1.getBlockZ(), pos2.getBlockZ());
+        int x = random.nextInt(arz)+1 + Math.min(pos1.getBlockX(), pos2.getBlockX());
+        int z = random.nextInt(tool)+1 + Math.min(pos1.getBlockZ(), pos2.getBlockZ());
+
+        Location loc = new Location(Bukkit.getWorld(getArena().getWorldName()+"-backup"), x, 0, z);
         return getArena().getArenaRegion().isInRegion(loc) ? loc : null;
     }
 

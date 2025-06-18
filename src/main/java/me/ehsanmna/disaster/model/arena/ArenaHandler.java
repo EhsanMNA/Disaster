@@ -17,6 +17,7 @@ public class ArenaHandler {
 
     private final Arena arena;
     private final ArenaService arenaService;
+    private final ArenaWorldHandler arenaWorldHandler;
     private boolean isRunning;
     private int gameTime;
     private SlimeWorld slimeWorld;
@@ -28,13 +29,7 @@ public class ArenaHandler {
         this.arenaService = new ArenaService(plugin ,arena);
         this.isRunning = false;
         this.gameTime = arena.getTime();
-        SlimeWorldUtils.createCloneWorld(arena.getWorldName());
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                slimeWorld = SlimeWorldUtils.getWorld(arena.getWorldName());
-                if (slimeWorld == null) plugin.getLogger().warning("Could not get "+arena.getWorldName()+" slime world! [arena:"+arena.getName()+"]");}
-        }.runTaskLater(plugin, 100L);
+        this.arenaWorldHandler = new ArenaWorldHandler(arena);
     }
 
     public Arena getArena() {
@@ -61,6 +56,10 @@ public class ArenaHandler {
         return players;
     }
 
+    public ArenaWorldHandler getArenaWorldHandler() {
+        return arenaWorldHandler;
+    }
+
     public void addDisaster(Disaster disaster) {
         disasters.add(disaster);
         disaster.act();
@@ -77,7 +76,11 @@ public class ArenaHandler {
     }
 
     public ArenaPlayer addSpectator(Player player){
+        if (getPlayersPlaying().size() == arena.getMaxPlayers()) return null;
+
         player.getInventory().clear();
+        player.setHealth(player.getMaxHealth());
+        player.setFoodLevel(20);
 
         ArenaPlayer arenaPlayer = new ArenaPlayer(player);
         arenaPlayer.setArena(arena);
