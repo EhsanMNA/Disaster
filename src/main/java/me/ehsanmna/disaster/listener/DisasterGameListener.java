@@ -1,14 +1,8 @@
 package me.ehsanmna.disaster.listener;
 
-import io.papermc.paper.event.player.PlayerPickItemEvent;
-import me.ehsanmna.disaster.events.ArenaPlayerDeathEvent;
 import me.ehsanmna.disaster.manager.ArenaManager;
 import me.ehsanmna.disaster.manager.PlayerManager;
-import me.ehsanmna.disaster.model.arena.Arena;
 import me.ehsanmna.disaster.model.arena.ArenaPlayer;
-import me.ehsanmna.disaster.model.disaster.Disaster;
-import me.ehsanmna.disaster.model.disaster.DisasterType;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -51,6 +45,7 @@ public class DisasterGameListener implements Listener {
     public void onInterAct(PlayerInteractEvent e){
         Player player = e.getPlayer();
         if (e.getAction() == Action.RIGHT_CLICK_BLOCK && playerManager.isPlayerInArena(player)) {
+            if (!playerManager.getPlayerInArena(player).isAlive()){e.setCancelled(true); return;}
             Material type = e.getClickedBlock().getType();
             if (type.toString().contains("DOOR") || type.toString().contains("BUTTON")) return;
             e.setCancelled(true);

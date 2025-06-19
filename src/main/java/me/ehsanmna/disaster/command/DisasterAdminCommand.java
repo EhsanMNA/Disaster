@@ -123,7 +123,7 @@ public class DisasterAdminCommand implements CommandExecutor, TabCompleter {
         }
         else if (args.length == 3) {
             List<String> arenaNameCommands = List.of(
-                    "addDisaster"
+                    "adddisaster"
             );
 
             if (arenaNameCommands.contains(args[0].toLowerCase())) {

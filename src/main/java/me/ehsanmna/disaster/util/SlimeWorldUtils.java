@@ -1,58 +1,51 @@
 package me.ehsanmna.disaster.util;
 
 import com.grinderwolf.swm.plugin.SWMPlugin;
-import com.grinderwolf.swm.plugin.commands.CommandManager;
-import com.grinderwolf.swm.plugin.config.ConfigManager;
-import com.grinderwolf.swm.plugin.config.WorldData;
-import com.grinderwolf.swm.plugin.config.WorldsConfig;
-import com.grinderwolf.swm.plugin.log.Logging;
-import com.infernalsuite.aswm.api.exceptions.*;
-import com.infernalsuite.aswm.api.loaders.SlimeLoader;
+import com.grinderwolf.swm.plugin.commands.sub.CloneWorldCmd;
 import com.infernalsuite.aswm.api.world.SlimeWorld;
-import com.infernalsuite.aswm.api.world.properties.SlimeProperties;
-import me.ehsanmna.disaster.DisasterPlugin;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-
-import java.io.IOException;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class SlimeWorldUtils {
 
 
     public static void createCloneWorld(String worldName){
+        CloneWorldCmd cloneWorldCmd = new CloneWorldCmd();
+        cloneWorldCmd.onCommand(Bukkit.getConsoleSender(), new String[]{worldName, worldName+"-backup", "file"});
 //        try{
 //            return SWMPlugin.getInstance().getWorld(worldName).clone(worldName+"-backup");
 //        }catch (NullPointerException e){e.printStackTrace();}
-        String newWorldName = worldName+"-backup";
-        WorldsConfig config = ConfigManager.getWorldConfig();
-        WorldData worldData = config.getWorlds().get(worldName);
-        if (worldData == null) DisasterPlugin.getInstance().getLogger().info(Logging.COMMAND_PREFIX + ChatColor.RED + "Failed to find world " + worldName + " inside the worlds config file.");
-        else if (CommandManager.getInstance().getWorldsInUse().contains(worldName))
-            DisasterPlugin.getInstance().getLogger().info(Logging.COMMAND_PREFIX + ChatColor.RED + "World " + worldName + " is already being used on another command! Wait some time and try again.");
-        else {
-            String dataSource = worldData.getDataSource();
-            SlimeLoader loader = SWMPlugin.getInstance().getLoader(dataSource);
-            CommandManager.getInstance().getWorldsInUse().add(worldName);
-            Bukkit.getScheduler().runTaskAsynchronously(SWMPlugin.getInstance(), () -> {
-                try {
-                    SlimeWorld slimeWorld = SWMPlugin.getInstance().getWorld(worldName) == null ?
-                            SWMPlugin.getInstance().loadWorld(loader, worldName, true, worldData.toPropertyMap()).clone(newWorldName, loader) :
-                            SWMPlugin.getInstance().getWorld(worldName).clone(newWorldName, loader);
-                    Bukkit.getScheduler().runTask(SWMPlugin.getInstance(), () -> {
-                        try {
-                            SWMPlugin.getInstance().loadWorld(slimeWorld, true);
-                            config.getWorlds().put(newWorldName, worldData);
-                            config.save();
-                        }catch (IllegalArgumentException | UnknownWorldException | IOException | WorldLockedException e) {e.printStackTrace();}
-                    });
-                    slimeWorld.getPropertyMap().setValue(SlimeProperties.DIFFICULTY, "hard");
-                    slimeWorld.getPropertyMap().setValue(SlimeProperties.ALLOW_MONSTERS, true);
-                    slimeWorld.getPropertyMap().setValue(SlimeProperties.PVP, true);
-                }catch (Exception ignored){}
-                finally {CommandManager.getInstance().getWorldsInUse().remove(worldName);}
-            });
-        }
+//        String worldName = templateWorldName+"-backup";
+//        WorldsConfig config = ConfigManager.getWorldConfig();
+//        WorldData worldData = config.getWorlds().get(templateWorldName);
+//
+//        World world = Bukkit.getWorld(worldName);
+//        if (world != null) DisasterPlugin.getInstance().getLogger().info(Logging.COMMAND_PREFIX + ChatColor.RED + "World " + worldName + " is already loaded!");
+//        else if (worldData == null) DisasterPlugin.getInstance().getLogger().info(Logging.COMMAND_PREFIX + ChatColor.RED + "Failed to find world " + templateWorldName + " inside the worlds config file.");
+//        else if (CommandManager.getInstance().getWorldsInUse().contains(templateWorldName))
+//            DisasterPlugin.getInstance().getLogger().info(Logging.COMMAND_PREFIX + ChatColor.RED + "World " + templateWorldName + " is already being used on another command! Wait some time and try again.");
+//        else {
+//            String dataSource = worldData.getDataSource();
+//            SlimeLoader loader = SWMPlugin.getInstance().getLoader(dataSource);
+//            CommandManager.getInstance().getWorldsInUse().add(templateWorldName);
+//            Bukkit.getScheduler().runTaskAsynchronously(SWMPlugin.getInstance(), () -> {
+//                try {
+//                    SlimeWorld slimeWorld = SWMPlugin.getInstance().getWorld(templateWorldName) == null ?
+//                            SWMPlugin.getInstance().loadWorld(loader, templateWorldName, true, worldData.toPropertyMap()).clone(worldName, loader) :
+//                            SWMPlugin.getInstance().getWorld(templateWorldName).clone(worldName, loader);
+//                    Bukkit.getScheduler().runTask(SWMPlugin.getInstance(), () -> {
+//                        try {
+//                            SWMPlugin.getInstance().loadWorld(slimeWorld, true);
+//                            config.getWorlds().put(worldName, worldData);
+//                            config.save();
+//                        }catch (IllegalArgumentException | UnknownWorldException | IOException | WorldLockedException e) {e.printStackTrace();}
+//                    });
+//                    slimeWorld.getPropertyMap().setValue(SlimeProperties.DIFFICULTY, "hard");
+//                    slimeWorld.getPropertyMap().setValue(SlimeProperties.ALLOW_MONSTERS, true);
+//                    slimeWorld.getPropertyMap().setValue(SlimeProperties.PVP, true);
+//                }catch (Exception ignored){}
+//                finally {CommandManager.getInstance().getWorldsInUse().remove(templateWorldName);}
+//            });
+//        }
 //        SlimeWorld slimeWorld = SWMPlugin.getInstance().getWorld(worldName+"-backup");
 //        slimeWorld.getPropertyMap().setValue(SlimeProperties.DIFFICULTY, "normal");
 //        slimeWorld.getPropertyMap().setValue(SlimeProperties.ALLOW_MONSTERS, true);

@@ -1,0 +1,4 @@
+version: 1
+game:
+  # When add disasters? (seconds)
+  disasters: [10,60,120]

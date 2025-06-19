@@ -1,8 +1,11 @@
 package me.ehsanmna.disaster.service;
 
 import me.ehsanmna.disaster.DisasterPlugin;
+import me.ehsanmna.disaster.events.ArenaEndEvent;
+import me.ehsanmna.disaster.events.ArenaStartEvent;
 import me.ehsanmna.disaster.model.arena.Arena;
 import me.ehsanmna.disaster.model.arena.ArenaPlayer;
+import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -84,8 +87,12 @@ public class ArenaWaitingService {
      * | Move players form waiting in to game service.
      **/
     public void start(){
+        ArenaStartEvent event = new ArenaStartEvent(arena);
+        Bukkit.getPluginManager().callEvent(event);
+
         timer = arena.getArenaConfig().waitingTime();
-        arenaService.startGame();
+        arena.getArenaHandler().setRunning(true);
+        arenaService.getGameService().startGame();
     }
 
 }

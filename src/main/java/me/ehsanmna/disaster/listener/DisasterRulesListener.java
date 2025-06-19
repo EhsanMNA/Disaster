@@ -1,13 +1,13 @@
 package me.ehsanmna.disaster.listener;
 
-import me.ehsanmna.disaster.events.ArenaPlayerDeathEvent;
 import me.ehsanmna.disaster.manager.ArenaManager;
 import me.ehsanmna.disaster.manager.PlayerManager;
 import me.ehsanmna.disaster.model.arena.Arena;
 import me.ehsanmna.disaster.model.arena.ArenaPlayer;
 import me.ehsanmna.disaster.model.disaster.Disaster;
 import me.ehsanmna.disaster.model.disaster.DisasterType;
-import org.bukkit.Bukkit;
+import me.ehsanmna.disaster.model.disaster.PvpDisaster;
+import me.ehsanmna.disaster.model.disaster.WolfPlayerDisaster;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -36,12 +36,13 @@ public class DisasterRulesListener implements Listener {
 
     // Potato disaster listener
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void handlePotato(EntityDamageByEntityEvent e){
+    public void handlePvp(EntityDamageByEntityEvent e){
         if (e.getDamager() instanceof Player damager && e.getEntity() instanceof Player damaged){
             if (playerManager.isPlayerInArena(damaged) && playerManager.isPlayerInArena(damager)){
                 ArenaPlayer arenaPlayer = playerManager.getPlayerInArena(damager);
                 Arena arena = arenaPlayer.getArena();
-                if (playerManager.getPlayerInArena(damager).isAlive())
+                e.setCancelled(true);
+                if (playerManager.getPlayerInArena(damager).isAlive()){
                     if (arena.getArenaHandler().hasDisaster(DisasterType.HOT_POTATO))
                         for (Disaster disaster : arena.getArenaHandler().getDisasters())
                             if (disaster.getType() == DisasterType.HOT_POTATO && disaster.isActive())
@@ -51,11 +52,29 @@ public class DisasterRulesListener implements Listener {
                                         damager.getInventory().removeItem(item);
                                         damaged.getInventory().addItem(item);
                                         e.setDamage(1);
-                                        return;
+                                        e.setCancelled(false);
                                     }
                                 }
-
-                e.setCancelled(true);
+                    if (arena.getArenaHandler().hasDisaster(DisasterType.WOLF_PLAYER))
+                        for (Disaster disaster : arena.getArenaHandler().getDisasters())
+                            if (disaster.getType() == DisasterType.WOLF_PLAYER){
+                                WolfPlayerDisaster wolfPlayerDisaster = (WolfPlayerDisaster) disaster;
+                                if (wolfPlayerDisaster.getWolfPlayer().getPlayer().getUniqueId().equals(damager.getUniqueId())) {
+                                    e.setDamage(4);
+                                    e.setCancelled(false);
+                                }
+                            }
+                    if (arena.getArenaHandler().hasDisaster(DisasterType.PVP))
+                        for (Disaster disaster : arena.getArenaHandler().getDisasters())
+                            if (disaster.getType() == DisasterType.PVP && disaster.isActive()){
+                                PvpDisaster pvpDisaster = (PvpDisaster) disaster;
+                                if (pvpDisaster.getStartedTimePlayers() / 2 >= arena.getArenaHandler().getPlayersPlaying().size()) pvpDisaster.deActive();
+                                else {
+                                    e.setDamage(1);
+                                    e.setCancelled(false);
+                                }
+                            }
+                }
             }
         }
     }

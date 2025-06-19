@@ -22,6 +22,11 @@ public class LightingDisaster extends BaseDisaster{
     @Override
     public void setup() {
         super.setup();
+        World world = Bukkit.getWorld(getArena().getWorldName());
+        assert world != null;
+        world.setStorm(true);
+        world.setWeatherDuration(999999);
+
         this.task = new BukkitRunnable() {
             @Override
             public void run() {

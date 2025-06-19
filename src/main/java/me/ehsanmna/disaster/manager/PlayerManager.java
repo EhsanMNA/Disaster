@@ -25,9 +25,6 @@ public class PlayerManager {
     }
 
     public void killPlayer(ArenaPlayer arenaPlayer){
-        ArenaPlayerDeathEvent event = new ArenaPlayerDeathEvent(arenaPlayer);
-        Bukkit.getPluginManager().callEvent(event);
-        if (event.isCancelled()) return;
 
         Player player = arenaPlayer.getPlayer();
         arenaPlayer.setAlive(false);
@@ -37,11 +34,16 @@ public class PlayerManager {
         player.setAllowFlight(true);
         player.setFlying(true);
         player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY,Integer.MAX_VALUE, 0, false,false));
+
+        ArenaPlayerDeathEvent event = new ArenaPlayerDeathEvent(arenaPlayer);
+        Bukkit.getPluginManager().callEvent(event);
+
+        if (arenaPlayer.getArena().getArenaHandler().getPlayersPlaying().isEmpty())
+            arenaPlayer.getArena().getArenaHandler().getArenaService().getGameService().finishGame();
     }
 
     public ArenaPlayer joinPlayer(Player player, Arena arena){
         ArenaPlayer arenaPlayer = arena.getArenaHandler().addPlayer(player);
-        if (arenaPlayer == null) return null;
 
         PlayerJoinArenaEvent event = new PlayerJoinArenaEvent(player, arena);
         Bukkit.getPluginManager().callEvent(event);

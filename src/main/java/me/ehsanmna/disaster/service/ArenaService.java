@@ -36,11 +36,6 @@ public class ArenaService {
         return gameService;
     }
 
-    public void startGame(){
-        arena.getArenaHandler().setRunning(true);
-        gameService.startGame();
-    }
-
     public void finishGame(boolean restart) {
         for (ArenaPlayer arenaPlayer : new ArrayList<>(arena.getArenaHandler().getPlayers())){
             Player player = arenaPlayer.getPlayer();
@@ -52,10 +47,8 @@ public class ArenaService {
                 @Override
                 public void run() {
                     arena.enable();
-                    SlimeWorldUtils.createCloneWorld(arena.getWorldName());
-                    arena.getArenaHandler().setSlimeWorld(SlimeWorldUtils.getWorld(arena.getWorldName()));
                 }
-            }.runTaskLater(getPlugin(), 100);
+            }.runTaskLater(getPlugin(), 20);
     }
 
     public DisasterPlugin getPlugin() {

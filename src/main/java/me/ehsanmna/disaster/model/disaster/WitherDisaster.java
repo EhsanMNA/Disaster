@@ -9,6 +9,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Wither;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
@@ -16,78 +17,59 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class DragonsDisaster extends BaseDisaster {
+public class WitherDisaster extends BaseDisaster {
 
     private final Random random = new Random();
-    private BukkitRunnable dragonTask;
-    private final List<EnderDragon> dragons = new ArrayList<>();
+    private BukkitRunnable witherTask;
+    private final List<Wither> withers = new ArrayList<>();
 
-    public DragonsDisaster(DisasterPlugin plugin, Arena arena) {
-        super(plugin, "<pink><bold>DRAGONS", "<white>Dragons has been spawned on the map.", arena, DisasterType.DRAGON);
+    public WitherDisaster(DisasterPlugin plugin, Arena arena) {
+        super(plugin, "<black><bold>WITHER", "<white>Worlds comes to end?!.", arena, DisasterType.WITHER);
     }
 
     @Override
     public void setup() {
         super.setup();
-        spawnDragons();
-        moveDragons();
-        dragonTask = new BukkitRunnable() {
+        spawnWithers();
+        witherTask = new BukkitRunnable() {
             @Override
             public void run() {
                 if (!isActive()) {
-                    cleanupDragons();
+                    cleanupWithers();
                     cancel();
                     return;
                 }
                 affectArea();
             }
         };
-        dragonTask.runTaskTimer(getPlugin(), 0L, 20L);
+        witherTask.runTaskTimer(getPlugin(), 0L, 20L);
         if (getArena().getArenaHandler().getArenaService().isDebug())
             getPlugin().getLogger().info("Dragons Disaster activated for arena: " + getArena().getName());
     }
 
-    private void spawnDragons() {
+    private void spawnWithers() {
         World world = Bukkit.getWorld(getArena().getWorldName()+"-backup");
         int spawned = 0;
         for (ArenaPlayer arenaPlayer : getArena().getArenaHandler().getPlayersPlaying()) {
-            if (spawned >= 2) break;
+            if (spawned >= 3) break;
             Player player = arenaPlayer.getPlayer();
             Location spawnLoc = getRandomLocationAroundPlayer(player);
             if (spawnLoc != null) {
                 spawnLoc.setY(spawnLoc.getWorld().getHighestBlockYAt(spawnLoc.getBlockX(), spawnLoc.getBlockZ()) + 10);
-                EnderDragon dragon = (EnderDragon) world.spawnEntity(spawnLoc, EntityType.ENDER_DRAGON);
-                dragon.setCustomName("Disaster Dragon " + (spawned + 1));
-                dragon.setCustomNameVisible(true);
-                dragons.add(dragon);
+                assert world != null;
+                Wither wither = (Wither) world.spawnEntity(spawnLoc, EntityType.WITHER);
+                withers.add(wither);
                 spawned++;
-                world.spawnParticle(Particle.DRAGON_BREATH, spawnLoc, 50, 1, 1, 1, 0.1);
-                world.playSound(spawnLoc, Sound.ENTITY_ENDER_DRAGON_GROWL, 1.0f, 1.0f);
+                world.spawnParticle(Particle.SPELL_WITCH, spawnLoc, 50, 1, 1, 1, 0.1);
+                world.playSound(spawnLoc, Sound.ENTITY_WITHER_SPAWN, 1.0f, 1.0f);
             }
-        }
-    }
-
-    private void moveDragons() {
-        List<ArenaPlayer> players = getArena().getArenaHandler().getPlayersPlaying();
-        if (players.isEmpty()) return;
-
-        for (EnderDragon dragon : dragons) {
-            if (dragon.isDead()) continue;
-            dragon.setPhase(EnderDragon.Phase.CIRCLING);
-            dragon.setPodium(getArena().getSpawn());
-            /*ArenaPlayer randomPlayer = players.get(random.nextInt(players.size()));
-            Location targetLoc = getRandomLocationAroundPlayer(randomPlayer.getPlayer());
-            if (targetLoc != null) {
-                targetLoc.setY(random.nextInt(maxY - minY + 1) + minY);
-                dragon.teleport(targetLoc);
-            }*/
         }
     }
 
     private Location getRandomLocationAroundPlayer(Player player) {
         Location playerLoc = player.getLocation();
         World world = playerLoc.getWorld();
-        int radius = 35;
+        int radius = 20;
         double angle = random.nextDouble() * 2 * Math.PI;
         double distance = random.nextDouble() * radius + 5;
         int x = (int) (playerLoc.getX() + Math.cos(angle) * distance);
@@ -98,37 +80,46 @@ public class DragonsDisaster extends BaseDisaster {
     }
 
     private void affectArea() {
-        for (EnderDragon dragon : dragons) {
-            if (dragon.isDead()) continue;
-            Location center = dragon.getLocation();
+        for (Wither wither : withers) {
+            if (wither.isDead()) continue;
+            Location center = wither.getLocation();
             World world = center.getWorld();
 
-            EntityUtilities.removeBlocksAround(center,getArena(),4);
+            EntityUtilities.removeBlocksAround(center,getArena(),3);
 
-            EntityUtilities.knockEntities(5.0,center,getArena());
+            double knockRadius = 4.0;
+            for (Player player : world.getNearbyEntitiesByType(Player.class, center, knockRadius)) {
+                if (getArena().getArenaRegion().isInRegion(player.getLocation())) {
+                    player.setVelocity(new Vector(0, 2, 0));
+                    player.damage(3.0);
+                    world.spawnParticle(Particle.END_ROD, player.getLocation(),
+                            20, 0.5, 0.5, 0.5, 0.1);
+                    world.playSound(player.getLocation(), Sound.ENTITY_WITHER_SHOOT, 1.0f, 1.0f);
+                }
+            }
         }
     }
 
-    private void cleanupDragons() {
-        for (EnderDragon dragon : dragons) {
-            if (dragon != null && !dragon.isDead()) {
-                Location loc = dragon.getLocation();
-                dragon.getWorld().spawnParticle(Particle.SMOKE_LARGE, loc, 50, 1, 1, 1, 0.1);
-                dragon.getWorld().playSound(loc, Sound.ENTITY_ENDER_DRAGON_DEATH, 1.0f, 1.0f);
-                dragon.remove();
+    private void cleanupWithers() {
+        for (Wither wither : withers) {
+            if (wither != null && !wither.isDead()) {
+                Location loc = wither.getLocation();
+                wither.getWorld().spawnParticle(Particle.SMOKE_LARGE, loc, 50, 1, 1, 1, 0.1);
+                wither.getWorld().playSound(loc, Sound.ENTITY_WITHER_DEATH, 1.0f, 1.0f);
+                wither.remove();
             }
         }
-        dragons.clear();
+        withers.clear();
     }
 
     @Override
     public void deActive() {
         super.deActive();
-        if (dragonTask != null) {
-            dragonTask.cancel();
-            dragonTask = null;
+        if (witherTask != null) {
+            witherTask.cancel();
+            witherTask = null;
         }
-        cleanupDragons();
+        cleanupWithers();
         if (getArena().getArenaHandler().getArenaService().isDebug())
             getPlugin().getLogger().info("Dragons Disaster deactivated for arena: " + getArena().getName());
     }

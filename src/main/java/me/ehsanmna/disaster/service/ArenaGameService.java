@@ -1,10 +1,12 @@
 package me.ehsanmna.disaster.service;
 
 import me.ehsanmna.disaster.DisasterPlugin;
+import me.ehsanmna.disaster.events.ArenaEndEvent;
 import me.ehsanmna.disaster.model.arena.Arena;
 import me.ehsanmna.disaster.model.arena.ArenaPlayer;
 import me.ehsanmna.disaster.model.disaster.*;
 import me.ehsanmna.disaster.util.TextUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -61,6 +63,9 @@ public class ArenaGameService {
     }
 
     public void finishGame(){
+        ArenaEndEvent event = new ArenaEndEvent(arena);
+        Bukkit.getPluginManager().callEvent(event);
+
         task.cancel();
         arena.getArenaHandler().announce("game-finish-header");
         StringBuilder stringBuilder = new StringBuilder();
@@ -132,7 +137,7 @@ public class ArenaGameService {
         while (arena.getArenaHandler().hasDisaster(d.getType())){
             disaster = getRandomDisaster();
             i++;
-            if(i == 50) return null;
+            if(i == 100) return null;
         }
         return disaster;
     }
@@ -140,19 +145,23 @@ public class ArenaGameService {
     private Disaster getRandomDisaster(){
         Disaster disaster;
         Random random = new Random();
-        int index = random.nextInt(5)+1;
+        int index = random.nextInt(10);
         switch (index){
             case 1 -> disaster = new DragonsDisaster(plugin,arena);
             case 2 -> disaster = new FloodDisaster(plugin,arena);
             case 3 -> disaster = new LightingDisaster(plugin,arena);
             case 4 -> disaster = new MeteorShowerDisaster(plugin,arena);
             case 5 -> disaster = new ZombieDisaster(plugin,arena);
+            case 6 -> disaster = new HotPotatoDisaster(plugin,arena);
+            case 7 -> disaster = new PvpDisaster(plugin,arena);
+            case 8 -> disaster = new WolfPlayerDisaster(plugin,arena);
+            case 9 -> disaster = new WitherDisaster(plugin,arena);
             default -> disaster = new AcidRainDisaster(plugin,arena);
         }
         return disaster;
     }
 
-    private Disaster getDisaster(DisasterType disasterType){
+    public Disaster getDisaster(DisasterType disasterType){
         Disaster disaster;
         switch (disasterType){
             case ACID_RAIN -> disaster = new AcidRainDisaster(plugin,arena);
@@ -161,6 +170,9 @@ public class ArenaGameService {
             case LIGHTING -> disaster = new LightingDisaster(plugin,arena);
             case METEOR -> disaster = new MeteorShowerDisaster(plugin,arena);
             case ZOMBIE -> disaster = new ZombieDisaster(plugin,arena);
+            case PVP -> disaster = new PvpDisaster(plugin,arena);
+            case WOLF_PLAYER -> disaster = new WolfPlayerDisaster(plugin,arena);
+            case WITHER -> disaster = new WitherDisaster(plugin,arena);
             default -> disaster = new HotPotatoDisaster(plugin,arena);
         }
         return disaster;

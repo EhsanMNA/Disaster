@@ -18,7 +18,8 @@ public class AcidRainDisaster extends BaseDisaster{
     @Override
     public void setup() {
         super.setup();
-        World world = getArena().getArenaRegion().getPos1().getWorld();
+        World world = Bukkit.getWorld(getArena().getWorldName()+"-backup");
+        assert world != null;
         world.setStorm(true);
         world.setWeatherDuration(999999);
 

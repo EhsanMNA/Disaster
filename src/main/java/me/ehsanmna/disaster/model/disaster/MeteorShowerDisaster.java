@@ -45,14 +45,12 @@ public class MeteorShowerDisaster extends BaseDisaster {
     }
 
     private void launchMeteors() {
-        int fireballCount = random.nextInt(3) + 1;
+        int fireballCount = random.nextInt(6) + 1;
         for (ArenaPlayer arenaPlayer : getArena().getArenaHandler().getPlayersPlaying()) {
             Player player = arenaPlayer.getPlayer();
             for (int i = 0; i < fireballCount; i++) {
-                getPlugin().getLogger().info("Launching fireball with 13 khordad");
                 Location spawnLoc = getRandomLocationOfArena();
                 if (spawnLoc == null) continue;
-                getPlugin().getLogger().info("location of fireball is: "+spawnLoc.getBlockX()+", "+spawnLoc.getBlockY()+", "+spawnLoc.getBlockZ());
 
                 spawnLoc.setY(maxY + 20);
                 World world = spawnLoc.getWorld();
@@ -88,7 +86,7 @@ public class MeteorShowerDisaster extends BaseDisaster {
         int x = random.nextInt(arz)+1 + Math.min(pos1.getBlockX(), pos2.getBlockX());
         int z = random.nextInt(tool)+1 + Math.min(pos1.getBlockZ(), pos2.getBlockZ());
 
-        Location loc = new Location(Bukkit.getWorld(getArena().getWorldName()+"-backup"), x, 0, z);
+        Location loc = new Location(Bukkit.getWorld(getArena().getWorldName()+"-backup"), x, pos1.getBlockY(), z);
         return getArena().getArenaRegion().isInRegion(loc) ? loc : null;
     }
 

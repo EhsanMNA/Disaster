@@ -33,6 +33,7 @@ public class HotPotatoDisaster extends BaseDisaster{
             @Override
             public void run() {
                 getPlugin().getPlayerManager().killPlayer(potatoPlayer);
+                deActive();
             }
         }.runTaskLater(getPlugin(), 20 * 45);
         if (getArena().getArenaHandler().getArenaService().isDebug())
