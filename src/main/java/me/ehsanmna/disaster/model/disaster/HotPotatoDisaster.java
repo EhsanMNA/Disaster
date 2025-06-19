@@ -3,6 +3,7 @@ package me.ehsanmna.disaster.model.disaster;
 import me.ehsanmna.disaster.DisasterPlugin;
 import me.ehsanmna.disaster.model.arena.Arena;
 import me.ehsanmna.disaster.model.arena.ArenaPlayer;
+import me.ehsanmna.disaster.util.TextUtils;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -18,7 +19,7 @@ public class HotPotatoDisaster extends BaseDisaster{
     private int playersWhenStarted = 0;
 
     public HotPotatoDisaster(DisasterPlugin plugin, Arena arena) {
-        super(plugin, "<gold><bold>HOT POTATO", "<white>Last one has the potato will be explode!", arena, DisasterType.HOT_POTATO);
+        super(plugin, TextUtils.getMessage("disaster-hot-potato-title"), TextUtils.getMessage("disaster-hot-potato-description"), arena, DisasterType.HOT_POTATO);
         setPlayersWhenStarted(arena.getArenaHandler().getPlayersPlaying().size());
     }
 

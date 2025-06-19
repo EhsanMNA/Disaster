@@ -56,7 +56,8 @@ public abstract class BaseDisaster implements Disaster{
 
     @Override
     public void setup() {
-        plugin.getLogger().info("Setting up the "+name +" disaster for "+arena.getName()+" arena!");
+        if (arena.getArenaHandler().getArenaService().isDebug())
+            plugin.getLogger().info("Setting up the "+name +" disaster for "+arena.getName()+" arena!");
     }
 
     @Override

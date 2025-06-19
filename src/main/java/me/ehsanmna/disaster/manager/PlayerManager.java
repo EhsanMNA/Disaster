@@ -4,6 +4,7 @@ import me.ehsanmna.disaster.events.ArenaPlayerDeathEvent;
 import me.ehsanmna.disaster.events.PlayerJoinArenaEvent;
 import me.ehsanmna.disaster.model.arena.Arena;
 import me.ehsanmna.disaster.model.arena.ArenaPlayer;
+import me.ehsanmna.disaster.util.TextUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
@@ -34,6 +35,8 @@ public class PlayerManager {
         player.setAllowFlight(true);
         player.setFlying(true);
         player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY,Integer.MAX_VALUE, 0, false,false));
+
+        TextUtils.sendTitle(player, TextUtils.getMessage("player_death_title"), TextUtils.getMessage("player_death_subtitle"));
 
         ArenaPlayerDeathEvent event = new ArenaPlayerDeathEvent(arenaPlayer);
         Bukkit.getPluginManager().callEvent(event);
@@ -93,5 +96,9 @@ public class PlayerManager {
         player.setFlying(false);
         player.clearActivePotionEffects();
         player.setGameMode(GameMode.SURVIVAL);
+        player.setHealthScale(20.0);
+        player.setHealthScaled(false);
+        player.setHealth(20.0);
+        player.setFoodLevel(30);
     }
 }

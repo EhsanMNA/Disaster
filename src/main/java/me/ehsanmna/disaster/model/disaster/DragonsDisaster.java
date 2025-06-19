@@ -4,6 +4,7 @@ import me.ehsanmna.disaster.DisasterPlugin;
 import me.ehsanmna.disaster.model.arena.Arena;
 import me.ehsanmna.disaster.model.arena.ArenaPlayer;
 import me.ehsanmna.disaster.util.EntityUtilities;
+import me.ehsanmna.disaster.util.TextUtils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.EnderDragon;
@@ -23,7 +24,7 @@ public class DragonsDisaster extends BaseDisaster {
     private final List<EnderDragon> dragons = new ArrayList<>();
 
     public DragonsDisaster(DisasterPlugin plugin, Arena arena) {
-        super(plugin, "<pink><bold>DRAGONS", "<white>Dragons has been spawned on the map.", arena, DisasterType.DRAGON);
+        super(plugin, TextUtils.getMessage("disaster-dragon-title"), TextUtils.getMessage("disaster-dragon-description"), arena, DisasterType.DRAGON);
     }
 
     @Override

@@ -3,6 +3,7 @@ package me.ehsanmna.disaster.model.disaster;
 import me.ehsanmna.disaster.DisasterPlugin;
 import me.ehsanmna.disaster.model.arena.Arena;
 import me.ehsanmna.disaster.model.arena.ArenaPlayer;
+import me.ehsanmna.disaster.util.TextUtils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
@@ -21,7 +22,7 @@ public class MeteorShowerDisaster extends BaseDisaster {
     private final int maxY;  // Maximum Y level of the region
 
     public MeteorShowerDisaster(DisasterPlugin plugin, Arena arena) {
-        super(plugin, "<red><bold>METEOR SHOWER", "<white>Oh look! world comes to end!", arena, DisasterType.METEOR);
+        super(plugin, TextUtils.getMessage("disaster-meteor-title"), TextUtils.getMessage("disaster-meteor-description"), arena, DisasterType.METEOR);
         this.maxY = Math.max(arena.getArenaRegion().getPos1().getBlockY(),
                 arena.getArenaRegion().getPos2().getBlockY());
     }

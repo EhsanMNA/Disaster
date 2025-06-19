@@ -3,6 +3,7 @@ package me.ehsanmna.disaster.model.disaster;
 import me.ehsanmna.disaster.DisasterPlugin;
 import me.ehsanmna.disaster.model.arena.Arena;
 import me.ehsanmna.disaster.model.arena.ArenaPlayer;
+import me.ehsanmna.disaster.util.TextUtils;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -19,7 +20,7 @@ public class PvpDisaster extends BaseDisaster{
     private int startedTimePlayers = 0;
 
     public PvpDisaster(DisasterPlugin plugin, Arena arena) {
-        super(plugin, "<gold><bold>PVP", "<white>PVP is on until half players remove!", arena, DisasterType.PVP);
+        super(plugin, TextUtils.getMessage("disaster-pvp-title"), TextUtils.getMessage("disaster-pvp-description"), arena, DisasterType.PVP);
     }
 
     @Override

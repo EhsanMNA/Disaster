@@ -7,6 +7,8 @@ console-access: "<red>Only players can use this command!"
 player-permission: "{prefix}<red>You don't have permission to use this command!"
 player-no-arena: "{prefix}<red>You are not in any arena!"
 player-in-arena: "{prefix}<red>You are already in arena!"
+player_death_title: "<red><bold>DEAD"
+player_death_subtitle: "<white>You died... now <yellow>spectating!"
 
 # command
 command-arg: "{prefix}<yellow>Use /disaster help to get help"
@@ -41,3 +43,26 @@ game-finish-footer: "<green><bold>−−−−−− ◈ −−−−−−−�
   # action bars
 game-actionbar-timer: "<green>Time remaining:<white> {0}"
 game-actionbar-spectator: "<yellow><bold>Spectating!<reset> <green>Time remaining:<white> {0}"
+
+# disasters
+disaster-acid-rain-title: "<green><bold>ACID RAIN"
+disaster-dragon-title: "<gray><bold>DRAGONS"
+disaster-flood-title: "<blue><bold>FLOOD"
+disaster-hot-potato-title: "<gold><bold>HOT POTATO"
+disaster-lighting-title: "<yellow><bold>LIGHTING"
+disaster-meteor-title: "<red><bold>METEOR SHOWER"
+disaster-pvp-title: "<gold><bold>PVP"
+disaster-wither-title: "<black><bold>WITHER"
+disaster-zombie-title: "<green><bold>ZOMBIES"
+disaster-wolf-player-title: "<gold><bold>WOLF PLAYER"
+
+disaster-acid-rain-description: "<reset><white>Get out of the rain! Its not safe!"
+disaster-dragon-description: "<reset><white>Dragons has been spawned on the map."
+disaster-flood-description: "<reset><white>Go to higher levels!"
+disaster-hot-potato-description: "<reset><white>Last one has the potato will be explode!"
+disaster-lighting-description: "<reset><white>Lighting will summon on the map."
+disaster-meteor-description: "<reset><white>Oh look! world comes to end!"
+disaster-pvp-description: "<reset><white>PVP is on until half players remove!"
+disaster-wither-description: "<reset><white>Worlds comes to end?!."
+disaster-wolf-player-description: "<reset><white>If you see the wolf, RUN!"
+disaster-zombie-description: "<reset><white>These are not humans!"

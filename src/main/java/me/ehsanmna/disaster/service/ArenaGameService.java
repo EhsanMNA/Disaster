@@ -46,7 +46,7 @@ public class ArenaGameService {
                 if (loopedTimes == 10) addRandomDisasters(true);
                 if (loopedTimes == 60) addRandomDisasters(true);
                 if (loopedTimes == 120) addRandomDisasters(true);
-                if (loopedTimes >= arena.getArenaConfig().time()) {
+                if (loopedTimes >= arena.getArenaConfig().time() || arena.getArenaHandler().getPlayersPlaying().isEmpty()) {
                     finishGame();
                     return;
                 }
@@ -145,7 +145,7 @@ public class ArenaGameService {
     private Disaster getRandomDisaster(){
         Disaster disaster;
         Random random = new Random();
-        int index = random.nextInt(10);
+        int index = random.nextInt(11);
         switch (index){
             case 1 -> disaster = new DragonsDisaster(plugin,arena);
             case 2 -> disaster = new FloodDisaster(plugin,arena);

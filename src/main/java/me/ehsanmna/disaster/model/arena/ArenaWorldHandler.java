@@ -7,6 +7,7 @@ import me.ehsanmna.disaster.DisasterPlugin;
 import me.ehsanmna.disaster.util.SlimeWorldUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Difficulty;
+import org.bukkit.World;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class ArenaWorldHandler {
@@ -24,10 +25,11 @@ public class ArenaWorldHandler {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    SlimeWorld slimeWorld = SlimeWorldUtils.getWorld(arena.getWorldName());
-                    if (arena.getArenaHandler().getSlimeWorld() == null){
+                    SlimeWorld slimeWorld = SlimeWorldUtils.getWorld(arena.getWorldName()+"-backup");
+                    if (slimeWorld == null){
                         DisasterPlugin.getInstance().getLogger().warning("Could not get "+arena.getWorldName()+" slime world! [arena:"+arena.getName()+"] using bukkit world game rules!");
-                        Bukkit.getWorld(arena.getWorldName()+"-backup").setDifficulty(Difficulty.HARD);
+                        World world = Bukkit.getWorld(arena.getWorldName()+"-backup");
+                        if (world != null) world.setDifficulty(Difficulty.HARD);
                         return;
                     }
 //                    arena.getArenaHandler().setSlimeWorld(slimeWorld);

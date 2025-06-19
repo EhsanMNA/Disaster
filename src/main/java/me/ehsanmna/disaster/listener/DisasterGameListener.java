@@ -17,6 +17,7 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.PlayerAttemptPickupItemEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 public class DisasterGameListener implements Listener {
 
@@ -73,6 +74,7 @@ public class DisasterGameListener implements Listener {
                 else if (player.getHealth() <= e.getDamage()){
                     playerManager.killPlayer(arenaPlayer);
                     e.setCancelled(true);
+                    if (e.getCause() == EntityDamageEvent.DamageCause.VOID) arenaPlayer.getPlayer().teleport(arenaPlayer.getArena().getSpawn());
                 }
             }
         }
@@ -80,7 +82,8 @@ public class DisasterGameListener implements Listener {
 
     @EventHandler
     public void onHungerChange(FoodLevelChangeEvent e) {
-        if (playerManager.isPlayerInArena((Player)e.getEntity())) e.setCancelled(true);
+        if (e.getEntity() instanceof Player player)
+          if (playerManager.isPlayerInArena(player)) e.setCancelled(true);
     }
 
     @EventHandler
@@ -90,6 +93,12 @@ public class DisasterGameListener implements Listener {
             if (playerManager.isPlayerInArena(player))
                 if (event.getRegainReason() == EntityRegainHealthEvent.RegainReason.SATIATED ||
                         event.getRegainReason() == EntityRegainHealthEvent.RegainReason.REGEN) event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onQuit(PlayerQuitEvent event){
+        Player player = event.getPlayer();
+        if (playerManager.isPlayerInArena(player)) playerManager.leavePlayer(player);
     }
 
 }

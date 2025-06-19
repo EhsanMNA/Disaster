@@ -4,6 +4,7 @@ import me.ehsanmna.disaster.DisasterPlugin;
 import me.ehsanmna.disaster.model.arena.Arena;
 import me.ehsanmna.disaster.model.disaster.DisasterType;
 import me.ehsanmna.disaster.util.TextUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -49,10 +50,75 @@ public class DisasterAdminCommand implements CommandExecutor, TabCompleter {
                 break;
 
             case "kick":
+                if (args.length < 2){
+                    TextUtils.sendMessage(player, prefix+" <red>Enter the name of the Arena!");
+                    return true;
+                }
+                String playerName = args[1];
+                Player kickPlayer = Bukkit.getPlayer(playerName);
+                if (kickPlayer == null || !kickPlayer.isOnline()){
+                    TextUtils.sendMessage(player, prefix+" <red>Player is not online!");
+                    return true;
+                }
+
+                if (!plugin.getPlayerManager().isPlayerInArena(player)){
+                    TextUtils.sendMessage(player, prefix+" <red>This player is not in an arena!");
+                    return true;
+                }
+
+                plugin.getPlayerManager().leavePlayer(kickPlayer);
+                TextUtils.sendMessage(player, prefix+" <green>Kicked "+playerName+" from arena!");
 
                 break;
 
             case "start":
+                if (args.length < 2){
+                    TextUtils.sendMessage(player, prefix+" <red>Enter the name of the Arena!");
+                    return true;
+                }
+                String name = args[1];
+                if (!plugin.getArenaManager().isArenaExist(name)){
+                    TextUtils.sendMessage(player, prefix+" <red>This arena does not exist!");
+                    return true;
+                }
+
+                Arena arena = plugin.getArenaManager().getArena(name);
+                if (!arena.isEnable()){
+                    TextUtils.sendMessage(player, prefix+" <red>This arena is not active!");
+                    return true;
+                }
+
+                if (arena.getArenaHandler().isRunning()){
+                    TextUtils.sendMessage(player, prefix+" <red>This arena is already running!");
+                    return true;
+                }
+
+                arena.getArenaHandler().getArenaService().getWaitingService().startTimer();
+
+                break;
+
+            case "forcestart":
+                if (args.length < 2){
+                    TextUtils.sendMessage(player, prefix+" <red>Enter the name of the Arena!");
+                    return true;
+                }
+                name = args[1];
+                if (!plugin.getArenaManager().isArenaExist(name)){
+                    TextUtils.sendMessage(player, prefix+" <red>This arena does not exist!");
+                    return true;
+                }
+
+                arena = plugin.getArenaManager().getArena(name);
+                if (!arena.isEnable()){
+                    TextUtils.sendMessage(player, prefix+" <red>This arena is not active!");
+                    return true;
+                }
+
+                if (arena.getArenaHandler().isRunning()){
+                    TextUtils.sendMessage(player, prefix+" <red>This arena is already running!");
+                    return true;
+                }
+                arena.getArenaHandler().getArenaService().getWaitingService().start();
 
                 break;
 
@@ -62,13 +128,13 @@ public class DisasterAdminCommand implements CommandExecutor, TabCompleter {
                     return true;
                 }
 
-                String name = args[1];
+                name = args[1];
                 if (!plugin.getArenaManager().isArenaExist(name)){
                     TextUtils.sendMessage(player, prefix+" <red>This arena does not exist!");
                     return true;
                 }
 
-                Arena arena = plugin.getArenaManager().getArena(name);
+                arena = plugin.getArenaManager().getArena(name);
                 if (!arena.isEnable()){
                     TextUtils.sendMessage(player, prefix+" <red>This arena is not active!");
                     return true;
@@ -125,6 +191,7 @@ public class DisasterAdminCommand implements CommandExecutor, TabCompleter {
             List<String> arenaNameCommands = List.of(
                     "adddisaster"
             );
+
 
             if (arenaNameCommands.contains(args[0].toLowerCase())) {
                 for (DisasterType disasterType : DisasterType.values())

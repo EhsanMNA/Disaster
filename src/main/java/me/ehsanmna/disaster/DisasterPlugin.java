@@ -5,6 +5,7 @@ import me.ehsanmna.disaster.command.DisasterDeveloperCommand;
 import me.ehsanmna.disaster.command.DisasterMainCommand;
 import me.ehsanmna.disaster.listener.DisasterEventsListener;
 import me.ehsanmna.disaster.listener.DisasterGameListener;
+import me.ehsanmna.disaster.listener.DisasterGameManageListener;
 import me.ehsanmna.disaster.listener.DisasterRulesListener;
 import me.ehsanmna.disaster.manager.*;
 import me.ehsanmna.disaster.model.arena.Arena;
@@ -50,6 +51,7 @@ public final class DisasterPlugin extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new DisasterGameListener(playerManager,arenaManager), this);
         getServer().getPluginManager().registerEvents(new DisasterRulesListener(playerManager,arenaManager), this);
         getServer().getPluginManager().registerEvents(new DisasterEventsListener(playerManager,arenaManager), this);
+        getServer().getPluginManager().registerEvents(new DisasterGameManageListener(playerManager,arenaManager), this);
 
         getLogger().info("Disaster has been loaded!");
     }

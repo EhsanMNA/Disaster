@@ -3,6 +3,7 @@ package me.ehsanmna.disaster.model.disaster;
 import me.ehsanmna.disaster.DisasterPlugin;
 import me.ehsanmna.disaster.model.arena.Arena;
 import me.ehsanmna.disaster.model.arena.ArenaPlayer;
+import me.ehsanmna.disaster.util.TextUtils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -17,7 +18,7 @@ public class FloodDisaster extends BaseDisaster {
     private int currentWaterLevel;
 
     public FloodDisaster(DisasterPlugin plugin, Arena arena) {
-        super(plugin, "<blue><bold>FLOOD", "<white>Go to higher levels!", arena, DisasterType.FLOOD);
+        super(plugin, TextUtils.getMessage("disaster-flood-title"), TextUtils.getMessage("disaster-flood-description"), arena, DisasterType.FLOOD);
         int minY = Math.min(arena.getArenaRegion().getPos1().getBlockY(),
                 arena.getArenaRegion().getPos2().getBlockY());
         this.currentWaterLevel = minY - 1;

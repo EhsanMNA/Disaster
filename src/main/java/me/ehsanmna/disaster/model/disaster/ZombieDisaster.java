@@ -3,6 +3,7 @@ package me.ehsanmna.disaster.model.disaster;
 import me.ehsanmna.disaster.DisasterPlugin;
 import me.ehsanmna.disaster.model.arena.Arena;
 import me.ehsanmna.disaster.model.arena.ArenaPlayer;
+import me.ehsanmna.disaster.util.TextUtils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
@@ -17,34 +18,20 @@ import java.util.Random;
 
 public class ZombieDisaster extends BaseDisaster {
 
-    private final DisasterPlugin plugin;
     private final Random random = new Random();
     private final List<Zombie> spawnedZombies = new ArrayList<>();
-    private boolean hasSpawned = false;
     private static final int MAX_ZOMBIES = 50;
 
     public ZombieDisaster(DisasterPlugin plugin, Arena arena) {
-        super(plugin,"<green><bold>ZOMBIES", "<white>These are not humans!", arena, DisasterType.ZOMBIE);
-        this.plugin = plugin;
+        super(plugin, TextUtils.getMessage("disaster-zombie-title"), TextUtils.getMessage("disaster-zombie-description"), arena, DisasterType.ZOMBIE);
     }
 
     @Override
     public void setup() {
         super.setup();
         spawnZombies();
-        hasSpawned = true;
         if (getArena().getArenaHandler().getArenaService().isDebug())
             getPlugin().getLogger().info("Zombie Disaster activated for arena: " + getArena().getName());
-
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                if (!isActive()) {
-                    cleanupZombies();
-                    cancel();
-                }
-            }
-        }.runTaskTimer(plugin, 20L, 20L);
     }
 
     private void spawnZombies() {

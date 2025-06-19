@@ -3,6 +3,7 @@ package me.ehsanmna.disaster.model.disaster;
 import me.ehsanmna.disaster.DisasterPlugin;
 import me.ehsanmna.disaster.model.arena.Arena;
 import me.ehsanmna.disaster.model.arena.ArenaPlayer;
+import me.ehsanmna.disaster.util.TextUtils;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -12,7 +13,7 @@ public class AcidRainDisaster extends BaseDisaster{
     private BukkitRunnable damageTask;
 
     public AcidRainDisaster(DisasterPlugin plugin, Arena arena) {
-        super(plugin, "<green><bold>ACID RAIN", "<white>Get out of the rain! Its not safe!", arena, DisasterType.ACID_RAIN);
+        super(plugin, TextUtils.getMessage("disaster-acid-rain-title"), TextUtils.getMessage("disaster-acid-rain-description"), arena, DisasterType.ACID_RAIN);
     }
 
     @Override

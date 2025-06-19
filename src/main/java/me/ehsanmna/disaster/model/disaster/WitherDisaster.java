@@ -4,6 +4,7 @@ import me.ehsanmna.disaster.DisasterPlugin;
 import me.ehsanmna.disaster.model.arena.Arena;
 import me.ehsanmna.disaster.model.arena.ArenaPlayer;
 import me.ehsanmna.disaster.util.EntityUtilities;
+import me.ehsanmna.disaster.util.TextUtils;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.EnderDragon;
@@ -24,7 +25,7 @@ public class WitherDisaster extends BaseDisaster {
     private final List<Wither> withers = new ArrayList<>();
 
     public WitherDisaster(DisasterPlugin plugin, Arena arena) {
-        super(plugin, "<black><bold>WITHER", "<white>Worlds comes to end?!.", arena, DisasterType.WITHER);
+        super(plugin, TextUtils.getMessage("disaster-wither-title"), TextUtils.getMessage("disaster-wither-description"), arena, DisasterType.WITHER);
     }
 
     @Override

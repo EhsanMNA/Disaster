@@ -3,6 +3,7 @@ package me.ehsanmna.disaster.model.disaster;
 import me.ehsanmna.disaster.DisasterPlugin;
 import me.ehsanmna.disaster.model.arena.Arena;
 import me.ehsanmna.disaster.model.arena.ArenaPlayer;
+import me.ehsanmna.disaster.util.TextUtils;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -23,7 +24,7 @@ public class WolfPlayerDisaster extends BaseDisaster{
     private final Random random = new Random();
 
     public WolfPlayerDisaster(DisasterPlugin plugin, Arena arena) {
-        super(plugin, "<gold><bold>WOLF PLAYER", "<white>If you see the wolf, RUN!", arena, DisasterType.WOLF_PLAYER);
+        super(plugin, TextUtils.getMessage("disaster-wolf-player-title"), TextUtils.getMessage("disaster-wolf-player-description"), arena, DisasterType.WOLF_PLAYER);
     }
 
     @Override
