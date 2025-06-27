@@ -6,10 +6,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class Region {
 
@@ -90,4 +87,15 @@ public class Region {
     public void setPos1(Location pos1) { this.pos1 = pos1; }
     public Location getPos2() { return pos2; }
     public void setPos2(Location pos2) { this.pos2 = pos2; }
+
+    public Location getRandomLocation() {
+        Random random = new Random();
+
+        int arz = Math.max(pos1.getBlockX(), pos2.getBlockX()) - Math.min(pos1.getBlockX(), pos2.getBlockX());
+        int tool = Math.max(pos1.getBlockZ(), pos2.getBlockZ()) - Math.min(pos1.getBlockZ(), pos2.getBlockZ());
+        int x = random.nextInt(arz)+1 + Math.min(pos1.getBlockX(), pos2.getBlockX());
+        int z = random.nextInt(tool)+1 + Math.min(pos1.getBlockZ(), pos2.getBlockZ());
+
+        return new Location(getPos1().getWorld(), x, pos1.getBlockY(), z);
+    }
 }

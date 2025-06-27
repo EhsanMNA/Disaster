@@ -50,7 +50,7 @@ public class MeteorShowerDisaster extends BaseDisaster {
         for (ArenaPlayer arenaPlayer : getArena().getArenaHandler().getPlayersPlaying()) {
             Player player = arenaPlayer.getPlayer();
             for (int i = 0; i < fireballCount; i++) {
-                Location spawnLoc = getRandomLocationOfArena();
+                Location spawnLoc = getArena().getArenaRegion().getRandomLocation();
                 if (spawnLoc == null) continue;
 
                 spawnLoc.setY(maxY + 20);
@@ -76,19 +76,6 @@ public class MeteorShowerDisaster extends BaseDisaster {
                 }.runTaskTimer(getPlugin(), 0L, 1L);
             }
         }
-    }
-
-    private Location getRandomLocationOfArena() {
-        Location pos1 = getArena().getArenaRegion().getPos1();
-        Location pos2 = getArena().getArenaRegion().getPos2();
-
-        int arz = Math.max(pos1.getBlockX(), pos2.getBlockX()) - Math.min(pos1.getBlockX(), pos2.getBlockX());
-        int tool = Math.max(pos1.getBlockZ(), pos2.getBlockZ()) - Math.min(pos1.getBlockZ(), pos2.getBlockZ());
-        int x = random.nextInt(arz)+1 + Math.min(pos1.getBlockX(), pos2.getBlockX());
-        int z = random.nextInt(tool)+1 + Math.min(pos1.getBlockZ(), pos2.getBlockZ());
-
-        Location loc = new Location(Bukkit.getWorld(getArena().getWorldName()+"-backup"), x, pos1.getBlockY(), z);
-        return getArena().getArenaRegion().isInRegion(loc) ? loc : null;
     }
 
     private void explodeArea(Location center) {

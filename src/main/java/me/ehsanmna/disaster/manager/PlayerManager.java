@@ -2,6 +2,7 @@ package me.ehsanmna.disaster.manager;
 
 import me.ehsanmna.disaster.events.ArenaPlayerDeathEvent;
 import me.ehsanmna.disaster.events.PlayerJoinArenaEvent;
+import me.ehsanmna.disaster.events.PlayerPerJoinArenaEvent;
 import me.ehsanmna.disaster.model.arena.Arena;
 import me.ehsanmna.disaster.model.arena.ArenaPlayer;
 import me.ehsanmna.disaster.util.TextUtils;
@@ -46,17 +47,20 @@ public class PlayerManager {
     }
 
     public ArenaPlayer joinPlayer(Player player, Arena arena){
-        ArenaPlayer arenaPlayer = arena.getArenaHandler().addPlayer(player);
-
-        PlayerJoinArenaEvent event = new PlayerJoinArenaEvent(player, arena);
+        PlayerPerJoinArenaEvent event = new PlayerPerJoinArenaEvent(player, arena);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) return null;
+
+        ArenaPlayer arenaPlayer = arena.getArenaHandler().addPlayer(player);
 
         if (arena.getArenaHandler() == null) arena.enable();
         if (arena.getArenaHandler().getSlimeWorld() == null) arena.getArenaHandler().getArenaWorldHandler().checkWorld();
 
         addPlayerToArena(arenaPlayer);
         player.teleport(arena.getSpawn());
+
+        PlayerJoinArenaEvent e = new PlayerJoinArenaEvent(arenaPlayer, arena);
+        Bukkit.getPluginManager().callEvent(e);
         return arenaPlayer;
     }
 
