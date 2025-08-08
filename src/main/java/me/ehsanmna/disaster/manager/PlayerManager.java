@@ -1,5 +1,6 @@
 package me.ehsanmna.disaster.manager;
 
+import me.ehsanmna.disaster.DisasterPlugin;
 import me.ehsanmna.disaster.events.ArenaPlayerDeathEvent;
 import me.ehsanmna.disaster.events.PlayerJoinArenaEvent;
 import me.ehsanmna.disaster.events.PlayerPerJoinArenaEvent;
@@ -20,10 +21,12 @@ public class PlayerManager {
 
     private final Map<UUID, ArenaPlayer> playersInArena = new HashMap<>();
 
+    private final DisasterPlugin plugin;
     private final LobbyManager lobbyManager;
 
-    public PlayerManager(LobbyManager lobbyManager) {
-        this.lobbyManager = lobbyManager;
+    public PlayerManager(DisasterPlugin plugin) {
+        this.plugin = plugin;
+        this.lobbyManager = plugin.getLobbyManager();
     }
 
     public void killPlayer(ArenaPlayer arenaPlayer){
@@ -94,7 +97,6 @@ public class PlayerManager {
 
     public void leavePlayer(Player player) {
         removePlayerFromArena(player.getUniqueId());
-        player.teleport(lobbyManager.getLobbySpawn());
         player.getInventory().clear();
         player.setAllowFlight(false);
         player.setFlying(false);
@@ -104,5 +106,7 @@ public class PlayerManager {
         player.setHealthScaled(false);
         player.setHealth(20.0);
         player.setFoodLevel(30);
+        try {player.teleport(lobbyManager.getLobbySpawn());
+        }catch (IllegalArgumentException e){plugin.getLogger().warning("Could not teleport player to spawn location: "+ e.getMessage()+" - "+lobbyManager.getLobbySpawn());}
     }
 }

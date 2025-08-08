@@ -32,7 +32,8 @@ public class DataManager {
         double y = section.getDouble("y",0);
         double z = section.getDouble("z",0);
         double yaw = section.getDouble("yaw",0);
-        double pitch = section.getDouble("yaw",0);
+        double pitch = section.getDouble("pitch",0);
+        if (world == null) plugin.getLogger().warning("Could not load Lobby spawn location!");
         return new Location(world,x,y,z, (float) yaw, (float) pitch);
     }
 

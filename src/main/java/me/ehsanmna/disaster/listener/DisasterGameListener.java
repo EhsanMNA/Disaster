@@ -11,9 +11,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityRegainHealthEvent;
-import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.player.PlayerAttemptPickupItemEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -81,6 +79,21 @@ public class DisasterGameListener implements Listener {
     }
 
     @EventHandler
+    public void onDamage(EntityDamageByEntityEvent e){
+        if (e.getEntity() instanceof Player player && e.getDamager() instanceof Player damager){
+            if (playerManager.isPlayerInArena(player) && playerManager.isPlayerInArena(damager)){
+                ArenaPlayer arenaPlayer = playerManager.getPlayerInArena(player);
+                ArenaPlayer arenaDamager = playerManager.getPlayerInArena(damager);
+                if (!arenaPlayer.isAlive() || !arenaDamager.isAlive()) e.setCancelled(true);
+                else if (player.getHealth() <= e.getDamage()){
+                    playerManager.killPlayer(arenaPlayer);
+                    e.setCancelled(true);
+                }
+            }
+        }
+    }
+
+    @EventHandler
     public void onHungerChange(FoodLevelChangeEvent e) {
         if (e.getEntity() instanceof Player player)
           if (playerManager.isPlayerInArena(player)) e.setCancelled(true);
@@ -99,6 +112,16 @@ public class DisasterGameListener implements Listener {
     public void onQuit(PlayerQuitEvent event){
         Player player = event.getPlayer();
         if (playerManager.isPlayerInArena(player)) playerManager.leavePlayer(player);
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onEntityTarget(EntityTargetEvent event) {
+        if (event.getTarget() instanceof Player player) {
+            if (playerManager.isPlayerInArena(player)){
+                ArenaPlayer arenaPlayer = playerManager.getPlayerInArena(player);
+                if (!arenaPlayer.isAlive()) event.setCancelled(true);
+            }
+        }
     }
 
 }

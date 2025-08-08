@@ -73,7 +73,7 @@ public class ConfigManager {
         double y = section.getDouble("y",0);
         double z = section.getDouble("z",0);
         double yaw = section.getDouble("yaw",0);
-        double pitch = section.getDouble("yaw",0);
+        double pitch = section.getDouble("pitch",0);
         return new Location(world,x,y,z, (float) yaw, (float) pitch);
     }
 
@@ -98,7 +98,7 @@ public class ConfigManager {
     }
 
     private void wrapLocation(ConfigurationSection section, Location location, boolean blocked){
-        section.set("world",location.getWorld().getName());
+        section.set("world",location.getWorld() != null ?location.getWorld().getName(): "world");
         section.set("x",location.getX());
         section.set("y",location.getY());
         section.set("z",location.getZ());

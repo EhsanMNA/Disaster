@@ -80,7 +80,8 @@ public class ArenaGameService {
         arena.getArenaHandler().announce("game-finish-footer");
 
         arena.getArenaHandler().setGameTime(arena.getArenaConfig().time());
-        arena.getArenaHandler().getDisasters().forEach(Disaster::deActive);
+        try {arena.getArenaHandler().getDisasters().forEach(Disaster::deActive);
+        }catch (Exception ignored){}
         arena.getArenaHandler().getDisasters().clear();
 
         new BukkitRunnable() {

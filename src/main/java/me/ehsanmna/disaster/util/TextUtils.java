@@ -54,7 +54,7 @@ public class TextUtils {
     }
 
     public static void sendTitle(Player player, String title, String subtitles) {
-        player.showTitle(Title.title(toComponent(getMessage(title)),toComponent(subtitles)));
+        player.showTitle(Title.title(toComponent(title),toComponent(subtitles)));
     }
 
     public static String colorize(String message){

@@ -3,18 +3,18 @@ package me.ehsanmna.disaster;
 import me.ehsanmna.disaster.command.DisasterAdminCommand;
 import me.ehsanmna.disaster.command.DisasterDeveloperCommand;
 import me.ehsanmna.disaster.command.DisasterMainCommand;
-import me.ehsanmna.disaster.listener.DisasterEventsListener;
-import me.ehsanmna.disaster.listener.DisasterGameListener;
-import me.ehsanmna.disaster.listener.DisasterGameManageListener;
-import me.ehsanmna.disaster.listener.DisasterRulesListener;
+import me.ehsanmna.disaster.listener.*;
 import me.ehsanmna.disaster.manager.*;
 import me.ehsanmna.disaster.model.arena.Arena;
+import me.ehsanmna.disaster.util.DependencyManager;
 import me.ehsanmna.disaster.util.TextUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class DisasterPlugin extends JavaPlugin {
 
     private static DisasterPlugin main;
+    private DependencyManager dependencyManager;
     private ConfigManager configManager;
     private ArenaManager arenaManager;
     private PlayerManager playerManager;
@@ -26,13 +26,19 @@ public final class DisasterPlugin extends JavaPlugin {
         main = this;
         saveDefaultConfig();
 
+        dependencyManager = new DependencyManager();
+        if (!dependencyManager.checkForDependency()) {
+            Bukkit.getPluginManager().disablePlugin(this);
+            return;
+        }
+
         TextUtils.initialize(this);
 
         lobbyManager = new LobbyManager();
         arenaManager = new ArenaManager(this);
         configManager = new ConfigManager(this);
         dataManager = new DataManager(this);
-        playerManager = new PlayerManager(lobbyManager);
+        playerManager = new PlayerManager(this);
 
         configManager.loadArenas();
         dataManager.loadData();
@@ -48,6 +54,7 @@ public final class DisasterPlugin extends JavaPlugin {
         getCommand("disasteradmin").setTabCompleter(adminCommand);
         getCommand("disaster").setTabCompleter(mainCommand);
 
+        getServer().getPluginManager().registerEvents(new DisasterSettingListener(), this);
         getServer().getPluginManager().registerEvents(new DisasterGameListener(playerManager,arenaManager), this);
         getServer().getPluginManager().registerEvents(new DisasterRulesListener(playerManager,arenaManager), this);
         getServer().getPluginManager().registerEvents(new DisasterEventsListener(playerManager,arenaManager), this);
@@ -58,11 +65,13 @@ public final class DisasterPlugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        configManager.saveArenas();
-        dataManager.save();
-        for (Arena arena : arenaManager.getArenas())
-            if (arena.isEnable() && arena.getArenaHandler().isRunning()) arena.getArenaHandler().getArenaService().finishGame(false);
-            else arena.disable();
+        try {
+            configManager.saveArenas();
+            dataManager.save();
+            for (Arena arena : arenaManager.getArenas())
+                if (arena.isEnable() && arena.getArenaHandler().isRunning()) arena.getArenaHandler().getArenaService().finishGame(false);
+                else arena.disable();
+        }catch (NullPointerException ignored){}
     }
 
     public static DisasterPlugin getInstance(){

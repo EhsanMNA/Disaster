@@ -2,3 +2,10 @@ version: 1
 game:
   # When add disasters? (seconds)
   disasters: [10,60,120]
+
+disasters:
+  RedLightGreenLightDisaster:
+    RED_LIGHT_DURATION: 5 # per seconds
+    GREEN_LIGHT_DURATION: 10
+    RED_LIGHT_SOUND: BLOCK_NOTE_BLOCK_BASS
+    GREEN_LIGHT_SOUND: BLOCK_NOTE_BLOCK_PLING

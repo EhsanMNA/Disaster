@@ -22,6 +22,7 @@ public class HalfHealthDisaster extends BaseDisaster {
             double currentHealth = player.getHealth();
             double newHealth = Math.max(0.5, currentHealth / 2.0); // Ensure health doesn't go below 0.5 (1/2 heart)
             player.setHealth(newHealth);
+            player.setHealthScale(newHealth);
             TextUtils.sendMessage(player, "disaster-halfhealth-notify");
 
             if (getArena().getArenaHandler().getArenaService().isDebug()) {

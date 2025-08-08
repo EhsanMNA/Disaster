@@ -2,6 +2,9 @@ name: Disaster
 version: '1.0-SNAPSHOT'
 main: me.ehsanmna.disaster.DisasterPlugin
 api-version: '1.13'
+load: POSTWORLD
+depend:
+  - SlimeWorldManager
 commands:
   disasteradmin:
     aliases:

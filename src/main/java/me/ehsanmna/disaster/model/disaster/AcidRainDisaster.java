@@ -70,8 +70,10 @@ public class AcidRainDisaster extends BaseDisaster{
             damageTask.cancel();
             damageTask = null;
         }
-        World world = getArena().getArenaRegion().getPos1().getWorld();
-        world.setWeatherDuration(0);
+        try {
+            World world = getArena().getArenaRegion().getPos1().getWorld();
+            world.setWeatherDuration(0);
+        }catch (IllegalArgumentException ignored){}
         if (getArena().getArenaHandler().getArenaService().isDebug())
             getPlugin().getLogger().info("Acid Rain Disaster deactivated for arena: " + getArena().getName());
     }

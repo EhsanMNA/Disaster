@@ -43,7 +43,7 @@ public class DisasterRulesListener implements Listener {
                 Arena arena = arenaPlayer.getArena();
                 e.setCancelled(true);
                 if (playerManager.getPlayerInArena(damager).isAlive()){
-                    if (arena.getArenaHandler().hasDisaster(DisasterType.HOT_POTATO))
+                    if (arena.getArenaHandler().hasDisaster(DisasterType.HOT_POTATO)){
                         for (Disaster disaster : arena.getArenaHandler().getDisasters())
                             if (disaster.getType() == DisasterType.HOT_POTATO && disaster.isActive())
                                 for (int i = 0; i < 35; i++){
@@ -51,29 +51,25 @@ public class DisasterRulesListener implements Listener {
                                     if (item != null && item.getType() == Material.POISONOUS_POTATO){
                                         damager.getInventory().removeItem(item);
                                         damaged.getInventory().addItem(item);
-                                        e.setDamage(1);
-                                        e.setCancelled(false);
+                                        damaged.damage(1);
                                     }
                                 }
-                    if (arena.getArenaHandler().hasDisaster(DisasterType.WOLF_PLAYER))
+                    }
+                    if (arena.getArenaHandler().hasDisaster(DisasterType.WOLF_PLAYER)){
                         for (Disaster disaster : arena.getArenaHandler().getDisasters())
                             if (disaster.getType() == DisasterType.WOLF_PLAYER){
                                 WolfPlayerDisaster wolfPlayerDisaster = (WolfPlayerDisaster) disaster;
-                                if (wolfPlayerDisaster.getWolfPlayer().getPlayer().getUniqueId().equals(damager.getUniqueId())) {
-                                    e.setDamage(4);
-                                    e.setCancelled(false);
-                                }
+                                if (wolfPlayerDisaster.getWolfPlayer().getPlayer().getUniqueId().equals(damager.getUniqueId())) damaged.damage(4);
                             }
-                    if (arena.getArenaHandler().hasDisaster(DisasterType.PVP))
+                    }
+                    if (arena.getArenaHandler().hasDisaster(DisasterType.PVP)){
                         for (Disaster disaster : arena.getArenaHandler().getDisasters())
                             if (disaster.getType() == DisasterType.PVP && disaster.isActive()){
                                 PvpDisaster pvpDisaster = (PvpDisaster) disaster;
                                 if (pvpDisaster.getStartedTimePlayers() / 2 >= arena.getArenaHandler().getPlayersPlaying().size()) pvpDisaster.deActive();
-                                else {
-                                    e.setDamage(1);
-                                    e.setCancelled(false);
-                                }
+                                else damaged.damage(1);
                             }
+                    }
                 }
             }
         }
