@@ -8,6 +8,9 @@ import net.kyori.adventure.title.Title;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class TextUtils {
 
     private static String prefix;
@@ -59,6 +62,18 @@ public class TextUtils {
 
     public static String colorize(String message){
         return ChatColor.translateAlternateColorCodes('&',message);
+    }
+
+    public static List<String> colorize(List<String> list){
+        List<String> newList = new ArrayList<>();
+        for (String str : list) newList.add(colorize(str));
+        return newList;
+    }
+
+    public static List<Component> toComponent(List<String> list){
+        List<Component> newList = new ArrayList<>();
+        for (String str : list) newList.add(toComponent(str));
+        return newList;
     }
 
     public static Component toComponent(String string){

@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="item-nbt-api-plugin-2.15.1">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/de/tr7zw/item-nbt-api-plugin/2.15.1/item-nbt-api-plugin-2.15.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

@@ -1,11 +1,14 @@
 package me.ehsanmna.disaster.model.arena;
 
 import me.ehsanmna.disaster.DisasterPlugin;
+import me.ehsanmna.disaster.model.machine.PowerUpMachine;
 import me.ehsanmna.disaster.model.region.Region;
 import me.ehsanmna.disaster.util.SlimeWorldUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class Arena {
@@ -20,6 +23,7 @@ public class Arena {
     private ArenaConfig arenaConfig;
     private Region arenaRegion;
     private ArenaHandler arenaHandler;
+    Map<String, PowerUpMachine> machines = new HashMap<>();
 
     public Arena(DisasterPlugin disasterPlugin, String name) {
         this.plugin = disasterPlugin;
@@ -86,6 +90,10 @@ public class Arena {
 
     public void setWorldName(String worldName) {
         this.worldName = worldName;
+    }
+
+    public Map<String, PowerUpMachine> getMachines() {
+        return machines;
     }
 
     public boolean hasArenaRegion(){

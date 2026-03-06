@@ -6,7 +6,9 @@ import me.ehsanmna.disaster.command.DisasterMainCommand;
 import me.ehsanmna.disaster.listener.*;
 import me.ehsanmna.disaster.manager.*;
 import me.ehsanmna.disaster.model.arena.Arena;
+import me.ehsanmna.disaster.model.hologram.HologramManager;
 import me.ehsanmna.disaster.util.DependencyManager;
+import me.ehsanmna.disaster.util.ErrorLogger;
 import me.ehsanmna.disaster.util.TextUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -20,6 +22,10 @@ public final class DisasterPlugin extends JavaPlugin {
     private PlayerManager playerManager;
     private DataManager dataManager;
     private LobbyManager lobbyManager;
+    private HologramManager hologramManager;
+    private PowerUpManager powerUpManager;
+    private PowerUpMachineManager powerUpMachineManager;
+    private ErrorLogger errorLogger;
 
     @Override
     public void onEnable() {
@@ -34,11 +40,15 @@ public final class DisasterPlugin extends JavaPlugin {
 
         TextUtils.initialize(this);
 
+        errorLogger = new ErrorLogger(this);
         lobbyManager = new LobbyManager();
         arenaManager = new ArenaManager(this);
         configManager = new ConfigManager(this);
         dataManager = new DataManager(this);
         playerManager = new PlayerManager(this);
+        hologramManager = new HologramManager(this, true);
+        powerUpManager = new PowerUpManager(this);
+        powerUpMachineManager = new PowerUpMachineManager(arenaManager);
 
         configManager.loadArenas();
         dataManager.loadData();
@@ -57,8 +67,9 @@ public final class DisasterPlugin extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new DisasterSettingListener(), this);
         getServer().getPluginManager().registerEvents(new DisasterGameListener(playerManager,arenaManager), this);
         getServer().getPluginManager().registerEvents(new DisasterRulesListener(playerManager,arenaManager), this);
-        getServer().getPluginManager().registerEvents(new DisasterEventsListener(playerManager,arenaManager), this);
+        getServer().getPluginManager().registerEvents(new DisasterEventsListener(this, playerManager,arenaManager), this);
         getServer().getPluginManager().registerEvents(new DisasterGameManageListener(playerManager,arenaManager), this);
+        getServer().getPluginManager().registerEvents(new PowerUpListener(this), this);
 
         getLogger().info("Disaster has been loaded!");
     }
@@ -96,5 +107,21 @@ public final class DisasterPlugin extends JavaPlugin {
 
     public LobbyManager getLobbyManager() {
         return lobbyManager;
+    }
+
+    public HologramManager getHologramManager() {
+        return hologramManager;
+    }
+
+    public PowerUpMachineManager getPowerUpMachineManager() {
+        return powerUpMachineManager;
+    }
+
+    public PowerUpManager getPowerUpManager(){
+        return powerUpManager;
+    }
+
+    public ErrorLogger getErrorLogger() {
+        return errorLogger;
     }
 }

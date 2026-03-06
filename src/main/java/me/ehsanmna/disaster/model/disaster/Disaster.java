@@ -6,22 +6,22 @@ import me.ehsanmna.disaster.model.arena.Arena;
 public interface Disaster {
 
 
-    public String getName();
+    String getName();
 
-    public String getDescription();
+    String getDescription();
 
-    public Arena getArena();
+    Arena getArena();
 
-    public DisasterPlugin getPlugin();
+    DisasterPlugin getPlugin();
 
-    public boolean isActive();
+    boolean isActive();
 
-    public DisasterType getType();
+    DisasterType getType();
 
-    public void setup();
+    void setup();
 
-    public void deActive();
+    void deActive();
 
-    public void act();
+    void act();
 
 }

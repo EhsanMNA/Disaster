@@ -41,9 +41,14 @@ game-finish-header: "<green><bold>−−−−−− ◈<white> Game Finished <g
 game-finish-title: "<white>              <yellow>Winners: <white> {0}"
 game-finish-footer: "<green><bold>−−−−−− ◈ −−−−−−−−−−−− ◈ −−−−−−"
 
-  # action bars
+# action bars
 game-actionbar-timer: "<green>Time remaining:<white> {0}"
 game-actionbar-spectator: "<yellow><bold>Spectating!<reset> <green>Time remaining:<white> {0}"
+
+# machine
+machine-no-requirement: "{prefix}<red>You do not meet the requirements!"
+machine-activate: "{prefix}<green>PowerUp activated!"
+machine-click: "<yellow><bold>CLICK"
 
 # disasters
 disaster-acid-rain-title: "<green><bold>ACID RAIN"
