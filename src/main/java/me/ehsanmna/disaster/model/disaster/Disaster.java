@@ -16,6 +16,8 @@ public interface Disaster {
 
     boolean isActive();
 
+    boolean canActive();
+
     DisasterType getType();
 
     void setup();

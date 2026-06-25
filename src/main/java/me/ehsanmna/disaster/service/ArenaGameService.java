@@ -119,7 +119,7 @@ public class ArenaGameService {
 
     public void addRandomDisasters(boolean sendMessage) {
         Random random = new Random();
-        int numDisasters = random.nextInt(2) + 1; // 1 or 2 disasters
+        int numDisasters = random.nextInt(2) + 1;
 
         // Get all possible disaster types except CUSTOME
         List<DisasterType> availableDisasters = new ArrayList<>(Arrays.asList(DisasterType.values()));
@@ -157,22 +157,19 @@ public class ArenaGameService {
         }
         for (Disaster disaster : selectedDisasters) {
             arena.getArenaHandler().addDisaster(disaster);
-            if (sendMessage) {
-                arena.getArenaHandler().announce("game-disaster-description", disaster.getName(), disaster.getDescription());
-            }
-            if (arena.getArenaHandler().getArenaService().isDebug()) {
-                plugin.getLogger().info("Added disaster " + disaster.getName() + " to arena: " + arena.getName());
-            }
+            if (sendMessage) arena.getArenaHandler().announce("game-disaster-description", disaster.getName(), disaster.getDescription());
+
+            if (arena.getArenaHandler().getArenaService().isDebug()) plugin.getLogger().info("Added disaster " + disaster.getName() + " to arena: " + arena.getName());
+
         }
-        if (sendMessage) {
-            arena.getArenaHandler().announce("game-disaster-footer");
-        }
+        if (sendMessage) arena.getArenaHandler().announce("game-disaster-footer");
+        
     }
 
     private Disaster getRandomDisaster() {
         Disaster disaster;
         Random random = new Random();
-        int index = random.nextInt(18); // Updated to 17 for new disasters
+        int index = random.nextInt(18);
         switch (index) {
             case 1 -> disaster = new DragonsDisaster(plugin, arena);
             case 2 -> disaster = new FloodDisaster(plugin, arena);

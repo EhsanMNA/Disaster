@@ -45,10 +45,12 @@ public class GroundAwayDisaster extends BaseDisaster {
         // Ensure we're working with the ground level
         center.setY(findGroundLevel(center));
 
+        center.setWorld(getArena().getSpawn().getWorld());
+
         // Notify players
         for (ArenaPlayer arenaPlayer : getArena().getArenaHandler().getPlayersPlaying()) {
             Player player = arenaPlayer.getPlayer();
-            player.sendMessage(ChatColor.RED + "The ground is collapsing!");
+            TextUtils.sendMessage(player, "disaster-groundaway-start");
             player.playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, 1.0f, 1.0f);
         }
 

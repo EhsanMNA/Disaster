@@ -16,11 +16,9 @@ public class HotPotatoDisaster extends BaseDisaster{
 
     private ArenaPlayer potatoPlayer;
     private BukkitTask potatoTask;
-    private int playersWhenStarted = 0;
 
     public HotPotatoDisaster(DisasterPlugin plugin, Arena arena) {
         super(plugin, TextUtils.getMessage("disaster-hot-potato-title"), TextUtils.getMessage("disaster-hot-potato-description"), arena, DisasterType.HOT_POTATO);
-        setPlayersWhenStarted(arena.getArenaHandler().getPlayersPlaying().size());
     }
 
     @Override
@@ -61,12 +59,8 @@ public class HotPotatoDisaster extends BaseDisaster{
         setup();
     }
 
-    public int getPlayersWhenStarted() {
-        return playersWhenStarted;
+    @Override
+    public boolean canActive() {
+        return getArena().getArenaHandler().getPlayersPlaying().size() > 1;
     }
-
-    public void setPlayersWhenStarted(int playersWhenStarted) {
-        this.playersWhenStarted = playersWhenStarted;
-    }
-
 }

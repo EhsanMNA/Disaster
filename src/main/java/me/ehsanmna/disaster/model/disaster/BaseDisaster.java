@@ -69,4 +69,9 @@ public abstract class BaseDisaster implements Disaster{
     public void act() {
         active = true;
     }
+
+    @Override
+    public boolean canActive() {
+        return true;
+    }
 }
